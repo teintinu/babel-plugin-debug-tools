@@ -1,7 +1,7 @@
 # babel-debug-tools
 Babeljs Debug Tools
 
-> 
+![Node.js Package](https://github.com/thr0w/babel-debug-tools/workflows/Node.js%20Package/badge.svg) 
 
 ## Install
 
