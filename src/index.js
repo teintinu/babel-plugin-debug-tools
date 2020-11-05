@@ -2,7 +2,9 @@
 // import type NodePath from "@babel/traverse";
 // import type Scope from "@babel/traverse";
 // import { visitor as tdzVisitor } from "./tdz";
+
 // import { traverse, template, types as t } from "@babel/core";
+const generate = require("@babel/generator").default;
 
 module.exports = function (plugin) {
   //api.assertVersion(7);
@@ -10,21 +12,46 @@ module.exports = function (plugin) {
   return {
     name: 'babel-debug-tools',
     visitor: {
-      CallExpression(path, state) {
-        const callee = path.get("callee");
+      ExpressionStatement(path, state) {
+        const expr = path.get('expression')
+        if (!(expr && expr.isCallExpression())) return
+        const callee = expr.get("callee");
 
         if (!callee.isMemberExpression()) return;
 
         const object = callee.get("object");
-        const property = callee.get("property");
 
         const name = state.opts.identifier || 'H5'
         const isH5 = object.isIdentifier({ name }) && !object.scope.getBinding(name) && object.scope.hasGlobal(name)
         if (isH5) {
-          if (path.parentPath.isExpressionStatement()) {
+          if (state.opts.mode === 'PRODUCTION') {
             path.remove();
           } else {
-            path.replaceWith(t.unaryExpression("void", t.numericLiteral(0)));
+            const block = t.blockStatement([])
+            const property = callee.get("property");
+            if (property.isIdentifier({ name: 'LOG' })) {
+              const loc = callee.node.loc
+              console.log(loc.start)
+              const nexpr = t.callExpression(t.clone(callee.node), [
+                //t.stringLiteral(locstr)
+                t.objectExpression([
+                  t.objectProperty(t.identifier('filename'), loc.filename ? t.stringLiteral(loc.filename) : t.identifier('undefined')),
+                  t.objectProperty(t.identifier('line'), t.numericLiteral(loc.start.line)),
+                  t.objectProperty(t.identifier('column'), t.numericLiteral(loc.start.column)),
+                ])
+              ].concat(expr.node.arguments.reduce((prev, curr) => {
+                const n2 = t.clone(curr)
+                if (!t.isStringLiteral(n2)) {
+                  const n1 = t.stringLiteral(generate(n2).code)
+                  prev.push(n1)
+                }
+                prev.push(n2)
+                return prev
+              }, [])))
+              block.body.push(t.ExpressionStatement(nexpr))
+            }
+            path.replaceWith(t.callExpression(t.functionExpression(null, [], block), []));
+            path.skip();
           }
         }
       },

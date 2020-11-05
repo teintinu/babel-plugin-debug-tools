@@ -1,7 +1,11 @@
 /* eslint-disable jest/consistent-test-it */
 
 const path = require('path');
+const toMatchFile = require('jest-file-snapshot').toMatchFile;
 const { create } = require('babel-test');
+
+console.log(toMatchFile)
+expect.extend({ toMatchFile });
 
 const configDEV = {
   plugins: [
@@ -33,7 +37,7 @@ describe('babel-debug-tools', () => {
     expect(code).toBe('const foo = 42;');
   })
   create(configProd).fixtures('Production mode', path.join(__dirname, '..', '__fixtures__/prod'));
-  // create(configDEV).fixtures('Dev mode', path.join(__dirname, '..', '__fixtures__/dev'));
+  create(configDEV).fixtures('Dev mode', path.join(__dirname, '..', '__fixtures__/dev'));
 
 });
 

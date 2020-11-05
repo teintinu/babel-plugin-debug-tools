@@ -172,7 +172,9 @@ module.exports = {
   // timers: "real",
 
   // A map from regular expressions to paths to transformers
-  // transform: undefined,
+  transform: {
+    "\\.js$": "babel-jest"
+  },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [
@@ -188,6 +190,9 @@ module.exports = {
 
   // An array of regexp patterns that are matched against all source file paths before re-running tests in watch mode
   // watchPathIgnorePatterns: [],
+  "watchPathIgnorePatterns": [
+    "__fixtures__\\/[^/]+\\/(output|error)\\.js"
+  ]
 
   // Whether to use watchman for file crawling
   // watchman: true,
