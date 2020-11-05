@@ -76,8 +76,8 @@ module.exports = {
 
 ##### mode
 Define plugin transform mode 
-- `DEV` - active tools, this is default mode.
-- `PRODUCTION` - remove debug tools from output
+- `development` or `test` - activate tools, this is default mode.
+- `production` - remove debug tools from output
 ##### identifier
 name of identifier for use tools, default is H5
 

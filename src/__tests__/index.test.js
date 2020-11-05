@@ -11,7 +11,7 @@ const configDEV = {
     [
       require.resolve('../index'),
       {
-        mode: 'DEV',
+        mode: 'development',
         identifier: 'H5'
       }
     ]
@@ -22,7 +22,7 @@ const configProd = {
     [
       require.resolve('../index'),
       {
-        mode: 'PRODUCTION',
+        mode: 'production',
         identifier: 'H5'
       }
     ]
