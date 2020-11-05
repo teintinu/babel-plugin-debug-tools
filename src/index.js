@@ -27,32 +27,32 @@ module.exports = function (plugin) {
           if (state.opts.mode === 'PRODUCTION') {
             path.remove();
           } else {
-            const block = t.blockStatement([])
             const property = callee.get("property");
-            if (property.isIdentifier({ name: 'LOG' })) {
-              const loc = callee.node.loc
-              console.log(loc.start)
-              const nexpr = t.callExpression(t.clone(callee.node), [
-                //t.stringLiteral(locstr)
-                t.objectExpression([
-                  t.objectProperty(t.identifier('filename'), loc.filename ? t.stringLiteral(loc.filename) : t.identifier('undefined')),
-                  t.objectProperty(t.identifier('line'), t.numericLiteral(loc.start.line)),
-                  t.objectProperty(t.identifier('column'), t.numericLiteral(loc.start.column)),
-                ])
-              ].concat(expr.node.arguments.reduce((prev, curr) => {
-                const n2 = t.clone(curr)
-                if (!t.isStringLiteral(n2)) {
-                  const n1 = t.stringLiteral(generate(n2).code)
-                  prev.push(n1)
-                }
-                prev.push(n2)
-                return prev
-              }, [])))
-              block.body.push(t.ExpressionStatement(nexpr))
-            }
-            path.replaceWith(t.callExpression(t.functionExpression(null, [], block), []));
-            path.skip();
+            if (property.isIdentifier({ name: 'LOG' })) transpileLOG()
+            else throw path.buildCodeFrameError("Invalid command");
           }
+        }
+        function transpileLOG() {
+          const loc = callee.node.loc
+          const nexpr = t.callExpression(t.clone(callee.node), [
+            //t.stringLiteral(locstr)
+            t.objectExpression([
+              t.objectProperty(t.identifier('filename'), loc.filename ? t.stringLiteral(loc.filename) : t.identifier('undefined')),
+              t.objectProperty(t.identifier('line'), t.numericLiteral(loc.start.line)),
+              t.objectProperty(t.identifier('column'), t.numericLiteral(loc.start.column)),
+            ])
+          ].concat(expr.node.arguments.reduce((prev, curr) => {
+            const n2 = t.clone(curr)
+            if (!t.isStringLiteral(n2)) {
+              const n1 = t.stringLiteral(generate(n2).code)
+              prev.push(n1)
+            }
+            prev.push(n2)
+            return prev
+          }, [])))
+          const stmt = t.ExpressionStatement(nexpr)
+          path.replaceWith(stmt);
+          path.skip();
         }
       },
     },
