@@ -4,7 +4,6 @@ const path = require('path');
 const toMatchFile = require('jest-file-snapshot').toMatchFile;
 const { create } = require('babel-test');
 
-console.log(toMatchFile)
 expect.extend({ toMatchFile });
 
 const configDEV = {

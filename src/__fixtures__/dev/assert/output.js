@@ -1,5 +1,5 @@
 function sum(a, b) {
-  H5.ASSERT({
+  H5 && H5.ASSERT({
     filename: undefined,
     line: 2,
     column: 2
@@ -8,7 +8,7 @@ function sum(a, b) {
   }, {
     "a > 0": a > 0
   });
-  H5.ASSERT({
+  H5 && H5.ASSERT({
     filename: undefined,
     line: 3,
     column: 2

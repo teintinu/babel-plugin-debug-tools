@@ -1,5 +1,5 @@
 function sum(a, b) {
-  H5.DEBUG("sum", typeof a === 'number', a > 0)
+  H5.LOG("sum", typeof a === 'number', a > 0)
   H5.ASSERT("sum", typeof b === 'number', b > 0)
   return a + b
 }
@@ -7,7 +7,7 @@ function sum(a, b) {
 function main() {
   H5.TRACE()
   const c = sum(a, b)
-  H5.CHECK(/sum/, 500)
+  H5.CHECK(/sum/)
   console.log(c)
 }
 
@@ -27,7 +27,10 @@ H5.INIT(() => {
         if (!args[args]) throw new Error(args)
       })
     },
-    CHECK(loc, regExpr, timeout, ...args) {
+    TRACE() {
+      history = []
+    },
+    CHECK(regExpr, ...args) {
       const n = Date.now() - timeout
       const hist = history
       history = undefined

@@ -21,8 +21,8 @@ module.exports = function (plugin) {
 
         const object = callee.get("object");
 
-        const name = state.opts.identifier || 'H5'
-        const isH5 = object.isIdentifier({ name }) && !object.scope.getBinding(name) && object.scope.hasGlobal(name)
+        const dbgidentifier = state.opts.identifier || 'H5'
+        const isH5 = object.isIdentifier({ name: dbgidentifier }) && !object.scope.getBinding(dbgidentifier) && object.scope.hasGlobal(dbgidentifier)
         if (isH5) {
           if (state.opts.mode === 'PRODUCTION') {
             path.remove();
@@ -30,9 +30,16 @@ module.exports = function (plugin) {
             const property = callee.get("property");
             if (property.isIdentifier({ name: 'LOG' })) transpileLOG()
             else if (property.isIdentifier({ name: 'ASSERT' })) transpileASSERT()
-            else if (property.isIdentifier({ name: 'TRACE' })) path.skip();
-            else if (property.isIdentifier({ name: 'CHECK' })) path.skip();
-            else if (property.isIdentifier({ name: 'INIT' })) path.skip();
+            else if (property.isIdentifier({ name: 'TRACE' }) || property.isIdentifier({ name: 'CHECK' })) {
+              const stmt = t.ExpressionStatement(t.logicalExpression('&&', t.identifier(dbgidentifier), t.clone(expr.node)))
+              path.replaceWith(stmt);
+              path.skip();
+            }
+            else if (property.isIdentifier({ name: 'INIT' })) {
+              const stmt = t.ExpressionStatement(t.callExpression(expr.node.arguments[0], []))
+              path.replaceWith(stmt);
+              path.skip();
+            }
             else throw path.buildCodeFrameError("Invalid command");
           }
         }
@@ -54,7 +61,7 @@ module.exports = function (plugin) {
             prev.push(n2)
             return prev
           }, [])))
-          const stmt = t.ExpressionStatement(nexpr)
+          const stmt = t.ExpressionStatement(t.logicalExpression('&&', t.identifier(dbgidentifier), nexpr))
           path.replaceWith(stmt);
           path.skip();
         }
@@ -83,7 +90,7 @@ module.exports = function (plugin) {
               }
               return prev
             }, [])))
-          const stmt = t.ExpressionStatement(nexpr)
+          const stmt = t.ExpressionStatement(t.logicalExpression('&&', t.identifier(dbgidentifier), nexpr))
           path.replaceWith(stmt);
           path.skip();
         }

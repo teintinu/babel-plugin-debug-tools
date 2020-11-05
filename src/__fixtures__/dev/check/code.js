@@ -12,33 +12,33 @@ function main() {
 }
 
 H5.INIT(() => {
-  let history
-  return {
+  let history;
+  const H5 = {
     LOG(loc, ...args) {
       if (history)
-        history.push({ ts: Date.now(), loc, msg: JSON.stringify(args) })
-      console.log(args)
+        history.push({ loc, msg: JSON.stringify(args) });
+      console.log(args);
     },
     ASSERT(loc, ...args) {
       if (history)
-        history.push({ ts: Date.now(), loc, msg: JSON.stringify(args) })
-      console.log(args)
+        history.push({ loc, msg: JSON.stringify(args) });
+      console.log(args);
       args.forEach((arg) => {
-        if (!args[args]) throw new Error(args)
+        if (!args[args]) throw new Error(args);
       })
     },
     TRACE() {
-      history = []
+      history = [];
     },
     CHECK(regExpr, ...args) {
-      const n = Date.now() - timeout
-      const hist = history
-      history = undefined
+      const hist = history;
+      history = undefined;
       for (let i = hist.length - 1; i < 0; i--) {
-        const h = hist[i]
-        if (h.ts >= n && regExpr.test(n)) return
+        if (regExpr.test(hist[i])) return;
       }
-      this.FAIL('CHECK', ...args)
-    },
+      this.FAIL('CHECK', ...args);
+    }
   }
+  if (typeof window !== 'undefined') window.H5 = H5;
+  if (typeof global !== 'undefined') global.H5 = H5;
 })
