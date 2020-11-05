@@ -24,7 +24,8 @@ module.exports = function (plugin) {
         const dbgidentifier = state.opts.identifier || 'H5'
         const isH5 = object.isIdentifier({ name: dbgidentifier }) && !object.scope.getBinding(dbgidentifier) && object.scope.hasGlobal(dbgidentifier)
         if (isH5) {
-          if (state.opts.mode === 'PRODUCTION') {
+          const mode = process.env.NODE_ENV || 'DEV'
+          if (mode === 'PRODUCTION') {
             path.remove();
           } else {
             const property = callee.get("property");

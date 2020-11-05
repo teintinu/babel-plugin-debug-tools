@@ -1,10 +1,10 @@
 {
-  "name": "babel-debug-tools",
-  "version": "1.0.4",
+  "name": "babel-plugin-debug-tools",
+  "version": "1.0.5",
   "description": "Helpers for debug Javascript Applications",
   "repository": {
     "type": "git",
-    "url": "https://github.com/thr0w/babel-debug-tools.git"
+    "url": "https://github.com/thr0w/babel-plugin-debug-tools.git"
   },
   "license": "GPL3",
   "publishConfig": {
