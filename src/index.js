@@ -29,6 +29,7 @@ module.exports = function (plugin) {
           } else {
             const property = callee.get("property");
             if (property.isIdentifier({ name: 'LOG' })) transpileLOG()
+            else if (property.isIdentifier({ name: 'ASSERT' })) transpileASSERT()
             else throw path.buildCodeFrameError("Invalid command");
           }
         }
@@ -50,6 +51,35 @@ module.exports = function (plugin) {
             prev.push(n2)
             return prev
           }, [])))
+          const stmt = t.ExpressionStatement(nexpr)
+          path.replaceWith(stmt);
+          path.skip();
+        }
+        function transpileASSERT() {
+          const loc = callee.node.loc
+          const nexpr = t.callExpression(t.clone(callee.node), [
+            //t.stringLiteral(locstr)
+            t.objectExpression([
+              t.objectProperty(t.identifier('filename'), loc.filename ? t.stringLiteral(loc.filename) : t.identifier('undefined')),
+              t.objectProperty(t.identifier('line'), t.numericLiteral(loc.start.line)),
+              t.objectProperty(t.identifier('column'), t.numericLiteral(loc.start.column)),
+            ])
+          ].concat(expr.node.arguments
+            .reduce((prev, curr) => {
+              const n2 = t.clone(curr)
+              if (t.isStringLiteral(n2)) prev.push(n2)
+              else {
+                const str = generate(n2).code
+                const n1 = t.stringLiteral(str)
+                if (t.isBinaryExpression(n2))
+                  prev.push(t.objectExpression([
+                    t.objectProperty(n1, n2),
+                  ]))
+                else
+                  prev.push(n1)
+              }
+              return prev
+            }, [])))
           const stmt = t.ExpressionStatement(nexpr)
           path.replaceWith(stmt);
           path.skip();
