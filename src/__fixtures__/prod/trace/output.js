@@ -3,6 +3,6 @@ function sum(a, b) {
 }
 
 function main() {
-  const c = sum(a, b);
+  const c = sum(1, 2);
   console.log(c);
 }

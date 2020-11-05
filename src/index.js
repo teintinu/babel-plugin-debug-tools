@@ -37,9 +37,7 @@ module.exports = function (plugin) {
               path.skip();
             }
             else if (property.isIdentifier({ name: 'INIT' })) {
-              const stmt = t.ExpressionStatement(t.callExpression(expr.node.arguments[0], []))
-              path.replaceWith(stmt);
-              path.skip();
+              path.expression = t.callExpression(t.clone(expr.node.arguments[0]), [])
             }
             else throw path.buildCodeFrameError("Invalid command");
           }
@@ -56,10 +54,10 @@ module.exports = function (plugin) {
           ].concat(expr.node.arguments.reduce((prev, curr) => {
             const n2 = t.clone(curr)
             if (!t.isStringLiteral(n2)) {
-              const n1 = t.stringLiteral(generate(n2).code)
-              prev.push(n1)
+              const n1 = t.stringLiteral(generate(n2).code + '=')
+              prev.push(t.binaryExpression('+', n1, n2))
             }
-            prev.push(n2)
+            else prev.push(n2)
             return prev
           }, [])))
           const stmt = t.ExpressionStatement(t.logicalExpression('&&', t.identifier(dbgidentifier), nexpr))
