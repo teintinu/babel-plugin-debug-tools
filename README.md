@@ -58,13 +58,6 @@ npm install --save-dev babel-debug-tools
 
 ## Setup
 
-#### mode
-Define plugin transform mode 
-- `DEV` - active tools, this is default mode.
-- `PRODUCTION` - remove debug tools from output
-#### identifier
-name of identifier for use tools, default is H5
-
 babel.config.js:
 ```javascript
 module.exports = {
@@ -81,9 +74,16 @@ module.exports = {
 }
 ```
 
-## define global
+##### mode
+Define plugin transform mode 
+- `DEV` - active tools, this is default mode.
+- `PRODUCTION` - remove debug tools from output
+##### identifier
+name of identifier for use tools, default is H5
+
+### define global
 It's important defines the global on application boot
-```
+```javascript
 H5.INIT(() => {
   let traceLog;
   const H5 = {
