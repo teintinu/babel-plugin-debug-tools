@@ -1,3 +1,5 @@
 src/__fixtures__**
 src/__tests__**
 *.log
+babel.config.js
+jest.config.js 
