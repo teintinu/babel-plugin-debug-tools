@@ -30,6 +30,9 @@ module.exports = function (plugin) {
             const property = callee.get("property");
             if (property.isIdentifier({ name: 'LOG' })) transpileLOG()
             else if (property.isIdentifier({ name: 'ASSERT' })) transpileASSERT()
+            else if (property.isIdentifier({ name: 'TRACE' })) path.skip();
+            else if (property.isIdentifier({ name: 'CHECK' })) path.skip();
+            else if (property.isIdentifier({ name: 'INIT' })) path.skip();
             else throw path.buildCodeFrameError("Invalid command");
           }
         }
