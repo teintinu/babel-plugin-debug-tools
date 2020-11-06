@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-debug-tools",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "Helpers for debug Javascript Applications",
   "repository": {
     "type": "git",
@@ -12,8 +12,8 @@
   },
   "main": "lib/index.js",
   "scripts": {
-    "build": "NODE_ENV=production npx babel --config-file ./babel.config.json --out-file ./lib/index.js ./src/index.ts",
-    "prepublish": "npm run build && npm test ",
+    "build-lib": "NODE_ENV=production npx babel --config-file ./babel.config.json --out-file ./lib/index.js ./src/index.ts",
+    "prepublish": "npm run build-lib && npm test ",
     "bhaskara": "cd sampleProject && npm i && npm test",
     "test": "jest",
     "syntax-check": "npx tsc -p ./tsconfig.json"

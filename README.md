@@ -65,7 +65,7 @@ module.exports = {
       [
         require.resolve('babel-plugin-debug-tools'),
         {
-          mode: 'DEV',
+          mode: 'development',
           identifier: 'H5'
         }
       ]
