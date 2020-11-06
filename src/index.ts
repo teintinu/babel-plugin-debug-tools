@@ -111,7 +111,7 @@ export default (() => {
             return prev
           }, []))
           const nexpr = t.callExpression(t.clone(callee.node), args)
-          path.get('expression').replaceWith(t.logicalExpression('&&', t.identifier(identifier), nexpr))
+          path.get('expression').replaceWith(nexpr)
         }
 
         function transpileASSERT() {
@@ -124,14 +124,10 @@ export default (() => {
                 prev.push(t.arrayExpression([cname, cclone]))
                 return prev
               }, [])))
-          path.get('expression').replaceWith(
-            t.logicalExpression('&&', t.identifier(identifier), nexpr)
-          )
+          path.get('expression').replaceWith(nexpr)
         }
         function transpileOthers() {
-          path.get('expression').replaceWith(
-            t.logicalExpression('&&', t.identifier(identifier), t.clone(expr.node))
-          )
+          path.get('expression').replaceWith(t.clone(expr.node))
         }
         function calleeLoc(): t.Expression {
           const loc = callee.node.loc

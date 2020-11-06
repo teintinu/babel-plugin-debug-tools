@@ -34,7 +34,7 @@ const configs = {
 describe('babel-debug-tools', () => {
 
   describe('LOG', () => {
-    it.only('production', () => {
+    it('production', () => {
       DEBUG.RESET()
       const { code, output } = transform('LOG', 'production')
       expect(DEBUG.HISTORY()).toMatchFile(output + '.trace')
@@ -48,7 +48,7 @@ describe('babel-debug-tools', () => {
     })
   })
 
-  describe('ASSERT', () => {
+  describe.skip('ASSERT', () => {
     it('production', () => {
       DEBUG.RESET()
       const { code, output } = transform('ASSERT', 'production')
@@ -63,7 +63,7 @@ describe('babel-debug-tools', () => {
     })
   })
 
-  describe('TRACE', () => {
+  describe.skip('TRACE', () => {
     it('production', () => {
       DEBUG.RESET()
       const { code, output } = transform('TRACE', 'production')
