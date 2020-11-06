@@ -9,7 +9,7 @@ Similar to console.log but logs also identifiers and source code position
 // app.js
 function sum(a,b) {
   H5.LOG(a,b);
-  → console.log('app.js:2:3', 'a='+ a, 'b='+ b);
+  → console.log('a='+ a, 'b='+ b, ' at app.js:2:3');
   return a+b;
 }
 ```
@@ -19,9 +19,8 @@ Similar to assert but logs also identifier and source code position
 // app.js
 function sum(a,b) {
   H5.ASSERT(a>0,b>0)
-  → console.log('app.js:2:3', 'a='+ a, 'b='+ b); 
-  → if (!(a>0)) throw new Error('assert a>0');
-  → if (!(b>0)) throw new Error('assert b>0');
+  → if (!(a>0)) throw new Error('assert a>0 at app.js:2:3');
+  → if (!(b>0)) throw new Error('assert b>0 at app.js:2:3');
   return a+b
 }
 ```
@@ -88,21 +87,21 @@ H5.INIT(() => {
   let traceLog;
   const H5 = {
     LOG(loc, ...args) {
-      console.log(formatLoc(loc), ...args);
+      console.log.apply(console, formatArgs(loc, args));
     },
     ASSERT(loc, ...args) {
       args.forEach((arg) => {
-        if (!args[arg]) throw new Error(formatLoc(loc), arg);
+        if (!args[1]) throw new Error('ASSERT FAIL: ' + arg[0] + ' at ' + formatLoc(loc));
       });
     },
     TRACE(...args) {
-      if (args.length) 
+      if (args.length)
         traceLog.push(args.join(' '));
       else
         traceLog = [];
     },
     CHECK(regExp) {
-      return traceLog.some(l=>regExp.test(l)))
+      return traceLog.some(l => regExp.test(l))
     }
   }
   if (typeof window !== 'undefined') window.H5 = H5;
@@ -110,6 +109,17 @@ H5.INIT(() => {
   function formatLoc(loc) {
     return (loc.filename || '') + ':' + loc.line + ':' + loc.column + ' ';
   }
+  function formatArgs(loc, args) {
+    const flatArgs = []
+    args.forEach((arg) => {
+      if (Array.isArray(args) && args.length == 2) {
+        flatArgs.push(arg[0])
+        flatArgs.push(arg[1])
+      }
+      else flatArgs.push(arg)
+    })
+    flatArgs.push(formatLoc(loc))
+    return flatArgs
+  }
 });
-
 ```

@@ -56,12 +56,8 @@ module.exports = function (plugin) {
             .concat(expr.node.arguments
               .reduce((prev, curr) => {
                 const cclone = t.clone(curr)
-                if (t.isStringLiteral(cclone)) prev.push(cclone)
-                else {
-                  const cname = t.stringLiteral(generate(cclone).code)
-                  prev.push(t.arrayExpression([cname, cclone]))
-
-                }
+                const cname = t.stringLiteral(generate(cclone).code)
+                prev.push(t.arrayExpression([cname, cclone]))
                 return prev
               }, [])))
           path.get('expression').replaceWith(

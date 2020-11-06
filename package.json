@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-debug-tools",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Helpers for debug Javascript Applications",
   "repository": {
     "type": "git",
@@ -18,7 +18,8 @@
     "trace",
     "test",
     "assert",
-    "console"
+    "console",
+    "tdd"
   ],
   "dependencies": {
     "@babel/core": "^7.12.3",

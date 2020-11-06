@@ -21,7 +21,7 @@ function main() {
 
     ASSERT(loc, ...args) {
       args.forEach(arg => {
-        if (!args[arg]) throw new Error('ASSERT FAIL: ' + arg + ' at ' + formatLoc(loc));
+        if (!args[1]) throw new Error('ASSERT FAIL: ' + arg[0] + ' at ' + formatLoc(loc));
       });
     },
 
