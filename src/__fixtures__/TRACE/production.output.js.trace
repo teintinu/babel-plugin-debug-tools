@@ -1,0 +1,21 @@
+ImportDeclaration: import { H5 } from './DEBUGGER'; // Dont use RESET, TRACE or HISTORY in production mode mode: production
+Removing import
+ExpressionStatement: H5.TRACE("sum", a, b);
+expr.isCallExpression(): true
+identifier: H5 mode: production isH5: true
+Removing node
+ExpressionStatement: H5.RESET();
+expr.isCallExpression(): true
+identifier: H5 mode: production isH5: true
+Removing node
+VariableDeclaration: const c = sum(1, 2); mode: production
+ExpressionStatement: H5.CHECK(/sum a=1 b=2/);
+expr.isCallExpression(): true
+identifier: H5 mode: production isH5: true
+Removing node
+ExpressionStatement: console.log(c);
+expr.isCallExpression(): true
+identifier: H5 mode: production isH5: false
+ExpressionStatement: console.log(H5.HISTORY());
+expr.isCallExpression(): true
+identifier: H5 mode: production isH5: false

@@ -1,0 +1,21 @@
+ImportDeclaration: import { H5 } from './DEBUGGER'; // Dont use RESET, TRACE or HISTORY in production mode mode: development
+ExpressionStatement: H5.TRACE("sum", a, b);
+expr.isCallExpression(): true
+identifier: H5 mode: development isH5: true
+LOG: "sum"
+ExpressionStatement: H5.RESET();
+expr.isCallExpression(): true
+identifier: H5 mode: development isH5: true
+RESET expr.node.arguments[0]: undefined
+VariableDeclaration: const c = sum(1, 2); mode: development
+ExpressionStatement: H5.CHECK(/sum a=1 b=2/);
+expr.isCallExpression(): true
+identifier: H5 mode: development isH5: true
+CHECK expr.node.arguments[0]: /sum a=1 b=2/
+ExpressionStatement: console.log(c);
+expr.isCallExpression(): true
+identifier: H5 mode: development isH5: false
+ExpressionStatement: console.log(H5.HISTORY());
+expr.isCallExpression(): true
+identifier: H5 mode: development isH5: false
+VariableDeclaration: var _DEBUGGER = require("./DEBUGGER"); mode: development

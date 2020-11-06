@@ -1,4 +1,6 @@
-import H5 from './DEBUGGER'
+import { H5 } from './DEBUGGER'
+
+// Dont use RESET, TRACE or HISTORY in production mode
 
 function sum(a, b) {
   H5.TRACE("sum", a, b)
@@ -6,8 +8,9 @@ function sum(a, b) {
 }
 
 function main() {
-  H5.TRACE()
+  H5.RESET()
   const c = sum(1, 2)
   H5.CHECK(/sum a=1 b=2/)
   console.log(c)
+  console.log(H5.HISTORY())
 }

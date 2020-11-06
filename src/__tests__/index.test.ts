@@ -63,7 +63,7 @@ describe('babel-debug-tools', () => {
     })
   })
 
-  describe.skip('TRACE', () => {
+  describe('TRACE', () => {
     it('production', () => {
       DEBUG.RESET()
       const { code, output } = transform('TRACE', 'production')
