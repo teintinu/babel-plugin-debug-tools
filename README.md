@@ -1,8 +1,6 @@
 # babel-debug-tools
 Babeljs Debug Tools helps you insert debug code and easely remove it when deploy to production
 
-![Node.js CI](https://github.com/thr0w/babel-debug-tools/workflows/Node.js%20CI/badge.svg)
-
 ### LOG
 Similar to console.log but logs also identifiers and source code position
 ```javascript
