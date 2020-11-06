@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "lib": [
+      "ES6"
+    ],
+    "isolatedModules": true,
+    "strict": true,
+    "noEmit": true,
+  }
+}

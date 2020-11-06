@@ -1,7 +1,8 @@
 
-const path = require('path');
-const babel = require("@babel/core");
-const toMatchFile = require('jest-file-snapshot').toMatchFile;
+import * as path from 'path';
+import * as babel from "@babel/core";
+import { toMatchFile } from 'jest-file-snapshot';
+
 expect.extend({ toMatchFile });
 
 const configs = {
@@ -66,8 +67,8 @@ describe('babel-debug-tools', () => {
 
 });
 
-function transform(test, config) {
-  const { code } = babel.transformFileSync(path.join(__dirname, '..', '__fixtures__', test, 'code.js'), configs[config]);
+function transform(test: 'LOG' | 'ASSERT' | 'TRACE', config: 'production' | 'development') {
+  const gen = babel.transformFileSync(path.join(__dirname, '..', '__fixtures__', test, 'code.js'), configs[config]);
   const output = path.join(__dirname, '..', '__fixtures__', test, config + '.output.js')
-  return { code, output }
+  return { code: gen?.code || '', output }
 }
