@@ -1,10 +1,9 @@
 
-import './initDebugger'
+import DEBUG from './initDEBUG'
 import * as t from '@babel/types';
 import { PluginObj, types } from "@babel/core";
 import { NodePath } from "@babel/traverse";
 import generate from "@babel/generator";
-import { DEBUG } from "../lib/index";
 
 // const plugin: (p)=>Visitor
 
