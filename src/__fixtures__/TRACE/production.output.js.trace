@@ -9,7 +9,7 @@ expr.isCallExpression(): true
 identifier: H5 mode: production isH5: true
 Removing node
 VariableDeclaration: const c = sum(1, 2); mode: production
-ExpressionStatement: H5.CHECK(/sum a=1 b=2/);
+ExpressionStatement: H5.ASSERT(/sum a=1 b=2/);
 expr.isCallExpression(): true
 identifier: H5 mode: production isH5: true
 Removing node

@@ -4,7 +4,11 @@ ExpressionStatement: H5.ASSERT(typeof a === 'number', a > 0);
 expr.isCallExpression(): true
 identifier: H5 mode: production isH5: true
 Removing node
-ExpressionStatement: H5.ASSERT(typeof b === 'number', b > 0);
+ExpressionStatement: H5.ASSERT(typeof b === 'number', 0 < b);
+expr.isCallExpression(): true
+identifier: H5 mode: production isH5: true
+Removing node
+ExpressionStatement: H5.ASSERT(!(a - b));
 expr.isCallExpression(): true
 identifier: H5 mode: production isH5: true
 Removing node

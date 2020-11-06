@@ -39,12 +39,13 @@ function quadraticEquation(a,b,c) {
 }
 // test.js
 it(()=>{
-  H5.TRACE() 
+  H5.RESET() 
   → tracelog = [] // traceLog is a global
   const result = quadraticEquation(1, 8, -9) // x² + 8x - 9 = 0
   const deltaWasTraced = H5.CHECK(/delta=100/} 
   → const deltaWasTraced = traceLog.some(l=>/delta=100/.test(l)))
   except(deltaWasTraced).toBe(true)
+  except(H5.HISTORY()).toBe('a=1 b=8 c=-9 delta=100')
   ...
 })
 ```
@@ -78,48 +79,57 @@ Define plugin transform mode
 - `development` or `test` - activate tools, this is default mode.
 - `production` - remove debug tools from output
 ##### identifier
-name of identifier for use tools, default is H5
+name of identifier for use with debug tools, default is `H5`
 
-### define global
-It's important defines the global on application boot
+### debug module
+You will need a debug module, like that but customized for your needs.
+
+See sample project or DEBUG.ts 
+
 ```javascript
-H5.INIT(() => {
-  let traceLog;
-  const H5 = {
-    LOG(loc, ...args) {
-      console.log.apply(console, formatArgs(loc, args));
-    },
-    ASSERT(loc, ...args) {
-      args.forEach((arg) => {
-        if (!args[1]) throw new Error('ASSERT FAIL: ' + arg[0] + ' at ' + formatLoc(loc));
-      });
-    },
-    TRACE(...args) {
-      if (args.length)
-        traceLog.push(args.join(' '));
-      else
-        traceLog = [];
-    },
-    CHECK(regExp) {
-      return traceLog.some(l => regExp.test(l))
-    }
-  }
-  if (typeof window !== 'undefined') window.H5 = H5;
-  if (typeof global !== 'undefined') global.H5 = H5;
-  function formatLoc(loc) {
-    return (loc.filename || '') + ':' + loc.line + ':' + loc.column + ' ';
-  }
-  function formatArgs(loc, args) {
-    const flatArgs = []
+
+let traceLog=[];
+
+export const H5 = {
+  LOG(loc, ...args) {
+    console.log.apply(console, formatArgs(args, loc));
+  },
+  ASSERT(loc, ...args) {
     args.forEach((arg) => {
-      if (Array.isArray(args) && args.length == 2) {
-        flatArgs.push(arg[0])
-        flatArgs.push(arg[1])
-      }
-      else flatArgs.push(arg)
-    })
-    flatArgs.push(formatLoc(loc))
-    return flatArgs
+      if (!args[1]) throw new Error('ASSERT FAIL: ' + arg[0] + ' at ' + formatLoc(loc));
+    });
+  },
+  RESET() {
+    traceLog = [];
+  },
+  TRACE(...args) {
+    traceLog.push(formatArgs(args));
+  },
+  HISTORY() {
+    return traceLog.join('\n')
+  },
+  CHECK(regExp) {
+    return traceLog.some(l => regExp.test(l))
   }
-});
+}
+
+function formatLoc(loc) {
+  return (loc.filename || '') + ':' + loc.line + ':' + loc.column + ' ';
+}
+function formatArg(arg) {
+  return JSON.stringify(arg)
+}
+function formatArgs(args, loc) {
+  const flatArgs = []
+  args.forEach((arg) => {
+    if (Array.isArray(args) && args.length == 2) {
+      flatArgs.push(arg[0]+': '+formatArg(arg[1]))
+    }
+    else flatArgs.push(formatArg(arg))
+  })
+  if (loc)
+    flatArgs.push(formatLoc(loc))
+  return flatArgs
+}
+
 ```

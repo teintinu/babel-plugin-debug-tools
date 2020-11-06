@@ -1,4 +1,5 @@
 import generate from "@babel/generator";
+import { isArrayTypeNode } from "typescript";
 
 let traceLog: string[] = [];
 
@@ -10,7 +11,15 @@ export const DEBUG: H5 = {
     const loc = arguments[0]
     for (let i = 1; i < arguments.length; i++) {
       const arg = arguments[i]
-      if (!arg[1]) throw new Error('ASSERT FAIL: ' + arg[0] + ' at ' + formatLoc(loc));
+      if (Array.isArray(arg)) {
+        if (!arg[1]) throw new Error(
+          'ASSERT FAIL: ' + arg[0] + ' at ' + formatLoc(loc) +
+          (arg[2] ? JSON.stringify(arg[2]) : '')
+        );
+      } else {
+        if (!traceLog.some(l => arg.test(l)))
+          throw new Error('NOT FOUND IN HISTORY: ' + arg.toString() + ' at ' + formatLoc(loc))
+      }
     }
   },
   RESET() {
@@ -21,12 +30,9 @@ export const DEBUG: H5 = {
   },
   TRACE() {
     traceLog.push(formatArgs(arguments, 0));
-  },
-  CHECK(regExp) {
-    return traceLog.some(l => regExp.test(l))
   }
-};
-(global as any).DEBUG = DEBUG;
+}
+
 function formatLoc(loc: H5Loc) {
   return (loc.filename || '') + ':' + loc.line + ':' + loc.column + ' ';
 }
@@ -61,7 +67,6 @@ export interface H5 {
   RESET(): void
   HISTORY(): string
   TRACE(...args: any[]): void
-  CHECK(regExpr: RegExp, ...args: any[]): void
 }
 
 declare interface H5Loc {

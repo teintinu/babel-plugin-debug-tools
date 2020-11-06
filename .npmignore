@@ -1,6 +1,7 @@
-src/__fixtures__**
-src/__tests__**
+src
+sample
 *.log
 babel.config.js
 jest.config.js 
 .github
+*.json

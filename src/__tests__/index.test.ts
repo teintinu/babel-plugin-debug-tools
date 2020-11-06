@@ -2,7 +2,7 @@
 import * as path from 'path';
 import * as babel from "@babel/core";
 import { toMatchFile } from 'jest-file-snapshot';
-import { DEBUG } from '../initDEBUG'
+import { DEBUG } from '../DEBUG'
 
 expect.extend({ toMatchFile });
 

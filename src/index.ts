@@ -1,5 +1,5 @@
 
-import { DEBUG } from './initDEBUG'
+import { DEBUG } from './DEBUG'
 import * as t from '@babel/types';
 import { PluginObj, types } from "@babel/core";
 import { NodePath } from "@babel/traverse";
@@ -77,10 +77,6 @@ export default (() => {
               transpileOthers()
             }
             else if (property.isIdentifier({ name: 'TRACE' })) transpileLOGorTRACE('TRACE')
-            else if (property.isIdentifier({ name: 'CHECK' })) {
-              DEBUG.TRACE('CHECK', expr.node.arguments[0])
-              transpileOthers()
-            }
             else if (property.isIdentifier({ name: 'INIT' })) {
               DEBUG.TRACE('INIT', expr.node.arguments[0])
               const arg0: t.FunctionExpression = expr.node.arguments[0] as any
@@ -91,7 +87,7 @@ export default (() => {
         }
 
         function transpileLOGorTRACE(kind: 'LOG' | 'TRACE') {
-          DEBUG.TRACE({ 'LOG': expr.node.arguments[0] })
+          DEBUG.TRACE({ LOG: expr.node.arguments[0] })
           const a0: t.Expression[] = kind === 'LOG' ? [calleeLoc()] : []
           const args = a0.concat(expr.node.arguments.reduce<t.Expression[]>((prev, curr) => {
             const cclone: t.Expression = t.clone(curr) as any
@@ -119,9 +115,34 @@ export default (() => {
           const nexpr = t.callExpression(t.clone(callee.node), [calleeLoc()]
             .concat(expr.node.arguments
               .reduce<t.Expression[]>((prev, curr) => {
-                const cclone: t.Expression = t.clone(curr) as any
-                const cname = t.stringLiteral(generate(cclone).code)
-                prev.push(t.arrayExpression([cname, cclone]))
+                if (t.isRegExpLiteral(curr)) {
+                  prev.push(curr)
+                } else {
+                  const cclone: t.Expression = t.clone(curr) as any
+                  const cname = t.stringLiteral(generate(cclone).code)
+                  const aexpr = t.arrayExpression([cname, cclone])
+                  prev.push(aexpr)
+                  if (t.isBinaryExpression(cclone)) {
+                    const binExpr = t.objectExpression([]);
+                    const left: t.Expression = t.clone(cclone.left) as any
+                    const cnameleft = t.stringLiteral(generate(left).code)
+                    if (!(t.isLiteral(left))) binExpr.properties.push(t.objectProperty(cnameleft, left))
+                    const right: t.Expression = t.clone(cclone.right) as any
+                    const cnameright = t.stringLiteral(generate(right).code)
+                    if (!(t.isLiteral(right))) binExpr.properties.push(t.objectProperty(cnameright, right))
+                    aexpr.elements.push(binExpr)
+                  }
+                  else if (t.isUnaryExpression(cclone)) {
+                    const arg: t.Expression = t.clone(cclone.argument) as any
+                    if (!(t.isLiteral(arg))) {
+                      const cnamearg = t.stringLiteral(generate(arg).code)
+                      aexpr.elements.push(t.objectExpression([
+                        t.objectProperty(cnamearg, arg)
+                      ]))
+                    }
+                  }
+                  else throw path.buildCodeFrameError("unsupported expression");
+                }
                 return prev
               }, [])))
           path.get('expression').replaceWith(nexpr)

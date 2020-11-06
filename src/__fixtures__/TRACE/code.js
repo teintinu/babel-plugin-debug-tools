@@ -10,7 +10,7 @@ function sum(a, b) {
 function main() {
   H5.RESET()
   const c = sum(1, 2)
-  H5.CHECK(/sum a=1 b=2/)
+  H5.ASSERT(/sum a=1 b=2/)
   console.log(c)
   console.log(H5.HISTORY())
 }
