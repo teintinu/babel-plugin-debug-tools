@@ -39,53 +39,42 @@ module.exports = function (plugin) {
           }
         }
         function transpileLOG() {
-          const loc = callee.node.loc
-          const nexpr = t.callExpression(t.clone(callee.node), [
-            //t.stringLiteral(locstr)
-            t.objectExpression([
-              t.objectProperty(t.identifier('filename'), loc.filename ? t.stringLiteral(loc.filename) : t.identifier('undefined')),
-              t.objectProperty(t.identifier('line'), t.numericLiteral(loc.start.line)),
-              t.objectProperty(t.identifier('column'), t.numericLiteral(loc.start.column)),
-            ])
-          ].concat(expr.node.arguments.reduce((prev, curr) => {
-            const n2 = t.clone(curr)
-            if (!t.isStringLiteral(n2)) {
-              const n1 = t.stringLiteral(generate(n2).code + '=')
-              prev.push(t.binaryExpression('+', n1, n2))
-            }
-            else prev.push(n2)
-            return prev
-          }, [])))
-          path.get('expression').replaceWith(t.logicalExpression('&&', t.identifier(dbgidentifier), nexpr))
-        }
-        function transpileASSERT() {
-          const loc = callee.node.loc
-          const nexpr = t.callExpression(t.clone(callee.node), [
-            //t.stringLiteral(locstr)
-            t.objectExpression([
-              t.objectProperty(t.identifier('filename'), loc.filename ? t.stringLiteral(loc.filename) : t.identifier('undefined')),
-              t.objectProperty(t.identifier('line'), t.numericLiteral(loc.start.line)),
-              t.objectProperty(t.identifier('column'), t.numericLiteral(loc.start.column)),
-            ])
-          ].concat(expr.node.arguments
-            .reduce((prev, curr) => {
-              const n2 = t.clone(curr)
-              if (t.isStringLiteral(n2)) prev.push(n2)
+          const nexpr = t.callExpression(t.clone(callee.node), [calleeLoc()]
+            .concat(expr.node.arguments.reduce((prev, curr) => {
+              const cclone = t.clone(curr)
+              if (t.isStringLiteral(cclone)) prev.push(cclone)
               else {
-                const str = generate(n2).code
-                const n1 = t.stringLiteral(str)
-                if (t.isBinaryExpression(n2))
-                  prev.push(t.objectExpression([
-                    t.objectProperty(n1, n2),
-                  ]))
-                else
-                  prev.push(n1)
+                const cname = t.stringLiteral(generate(cclone).code)
+                prev.push(t.arrayExpression([cname, cclone]))
               }
               return prev
             }, [])))
+          path.get('expression').replaceWith(t.logicalExpression('&&', t.identifier(dbgidentifier), nexpr))
+        }
+        function transpileASSERT() {
+          const nexpr = t.callExpression(t.clone(callee.node), [calleeLoc()]
+            .concat(expr.node.arguments
+              .reduce((prev, curr) => {
+                const cclone = t.clone(curr)
+                if (t.isStringLiteral(cclone)) prev.push(cclone)
+                else {
+                  const cname = t.stringLiteral(generate(cclone).code)
+                  prev.push(t.arrayExpression([cname, cclone]))
+
+                }
+                return prev
+              }, [])))
           path.get('expression').replaceWith(
             t.logicalExpression('&&', t.identifier(dbgidentifier), nexpr)
           )
+        }
+        function calleeLoc() {
+          const loc = callee.node.loc
+          return t.objectExpression([
+            t.objectProperty(t.identifier('filename'), state.filename ? t.stringLiteral(state.filename.replace(/^.*__fixtures__/, 'fixtures')) : t.identifier('undefined')),
+            t.objectProperty(t.identifier('line'), t.numericLiteral(loc.start.line)),
+            t.objectProperty(t.identifier('column'), t.numericLiteral(loc.start.column)),
+          ])
         }
       },
     },

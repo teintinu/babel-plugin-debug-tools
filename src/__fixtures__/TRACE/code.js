@@ -14,11 +14,11 @@ H5.INIT(() => {
   let traceLog;
   const H5 = {
     LOG(loc, ...args) {
-      console.log(formatLoc(loc), ...args);
+      console.log.apply(console, formatArgs(loc, args));
     },
     ASSERT(loc, ...args) {
       args.forEach((arg) => {
-        if (!args[arg]) throw new Error(formatLoc(loc), arg);
+        if (!args[arg]) throw new Error('ASSERT FAIL: ' + arg + ' at ' + formatLoc(loc));
       });
     },
     TRACE(...args) {
@@ -35,5 +35,17 @@ H5.INIT(() => {
   if (typeof global !== 'undefined') global.H5 = H5;
   function formatLoc(loc) {
     return (loc.filename || '') + ':' + loc.line + ':' + loc.column + ' ';
+  }
+  function formatArgs(loc, args) {
+    const flatArgs = []
+    args.forEach((arg) => {
+      if (Array.isArray(args) && args.length == 2) {
+        flatArgs.push(arg[0])
+        flatArgs.push(arg[1])
+      }
+      else flatArgs.push(arg)
+    })
+    flatArgs.push(formatLoc(loc))
+    return flatArgs
   }
 });
