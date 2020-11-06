@@ -3,7 +3,8 @@ module.exports = {
   coverageDirectory: "coverage",
   testEnvironment: "node",
   "modulePathIgnorePatterns": [
-    "debug.d.ts"
+    "debug.d.ts",
+    "bhaskara"
   ],
   "watchPathIgnorePatterns": [
     "__fixtures__\\/[^/]+\\/.*(output|error)\\.js"

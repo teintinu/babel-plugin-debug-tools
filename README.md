@@ -95,9 +95,19 @@ export const H5 = {
     console.log.apply(console, formatArgs(args, loc));
   },
   ASSERT(loc, ...args) {
-    args.forEach((arg) => {
-      if (!args[1]) throw new Error('ASSERT FAIL: ' + arg[0] + ' at ' + formatLoc(loc));
-    });
+    const loc = arguments[0]
+    for (let i = 1; i < arguments.length; i++) {
+      const arg = arguments[i]
+      if (Array.isArray(arg)) {
+        if (!arg[1]) throw new Error(
+          'ASSERT FAIL: ' + arg[0] + ' at ' + formatLoc(loc) +
+          (arg[2] ? JSON.stringify(arg[2]) : '')
+        );
+      } else {
+        if (!traceLog.some(l => arg.test(l)))
+          throw new Error('NOT FOUND IN HISTORY: ' + arg.toString() + ' at ' + formatLoc(loc))
+      }
+    }
   },
   RESET() {
     traceLog = [];
@@ -107,10 +117,7 @@ export const H5 = {
   },
   HISTORY() {
     return traceLog.join('\n')
-  },
-  CHECK(regExp) {
-    return traceLog.some(l => regExp.test(l))
-  }
+  },  
 }
 
 function formatLoc(loc) {

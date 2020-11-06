@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npx jest"
+    "update-dev": "cp ../lib/index.js node_modules/babel-plugin-debug-tools/lib/index.js",
+    "test": "npm run update-dev && npx jest"
   },
   "author": "",
   "license": "ISC",
@@ -12,7 +13,7 @@
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",
     "babel-jest": "^26.6.3",
-    "babel-plugin-debug-tools": "^1.0.11",
+    "babel-plugin-debug-tools": "^1.0.13",
     "jest": "^26.6.3"
   }
 }

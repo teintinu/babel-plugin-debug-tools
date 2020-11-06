@@ -28,6 +28,17 @@ const configs = {
         }
       ]
     ],
+  },
+  bhaskara: {
+    plugins: [
+      [
+        require.resolve('../../lib/index'),
+        {
+          mode: 'development',
+          identifier: 'BHASKARA'
+        }
+      ]
+    ],
   }
 };
 
@@ -78,13 +89,41 @@ describe('babel-debug-tools', () => {
     })
   })
 
+  describe('sampleProject', () => {
+    describe('BHASKARA transformation', () => {
+      it('lib', () => {
+        DEBUG.RESET()
+        const { code, output } = transformfile(
+          'bhaskara',
+          path.join(__dirname, '../..', 'sampleProject/src/bhaskara.js'),
+          path.join(__dirname, '../__fixtures__/bhaskara/bhaskara.output.js')
+        )
+        expect(DEBUG.HISTORY()).toMatchFile(output + '.trace')
+        expect(code).toMatchFile(output)
+      })
+      it('test', () => {
+        DEBUG.RESET()
+        const { code, output } = transformfile(
+          'bhaskara',
+          path.join(__dirname, '../..', 'sampleProject/src/bhaskara.test.js'),
+          path.join(__dirname, '../__fixtures__/bhaskara/bhaskara.test.output.js')
+        )
+        expect(DEBUG.HISTORY()).toMatchFile(output + '.trace')
+        expect(code).toMatchFile(output)
+      })
+    })
+  });
 });
 
-function transform(test: 'LOG' | 'ASSERT' | 'TRACE', config: 'production' | 'development') {
-  const gen = babel.transformFileSync(
+function transform(test: 'LOG' | 'ASSERT' | 'TRACE', config: keyof typeof configs) {
+  return transformfile(
+    config,
     path.join(__dirname, '..', '__fixtures__', test, 'code.js'),
-    configs[config]
-  );
-  const output = path.join(__dirname, '..', '__fixtures__', test, config + '.output.js')
+    path.join(__dirname, '..', '__fixtures__', test, config + '.output.js')
+  )
+}
+
+function transformfile(config: keyof typeof configs, input: string, output: string) {
+  const gen = babel.transformFileSync(input, configs[config]);
   return { code: gen?.code || '', output }
 }

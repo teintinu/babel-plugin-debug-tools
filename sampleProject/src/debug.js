@@ -6,7 +6,6 @@ export const BHASKARA = {
     console.log(formatArgs(arguments, 1));
   },
   ASSERT() {
-    console.log(arguments)
     const loc = arguments[0]
     for (let i = 1; i < arguments.length; i++) {
       const arg = arguments[i]

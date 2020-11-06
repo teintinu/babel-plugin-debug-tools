@@ -1,9 +1,9 @@
 import { quadraticEquation } from './bhaskara'
 import { BHASKARA } from './debug'
 
-test.skip('x² + 8x - 9 = 0', () => {
+test('x² + 8x - 9 = 0', () => {
   BHASKARA.RESET()
   const { x1, x2 } = quadraticEquation(1, 8, -9)
-  BHASKARA.ASSERT(/delta=100/, x1 === 1, x2 === 2)
-  expect(BHASKARA.HISTORY()).toEqual('x')
+  BHASKARA.ASSERT(/delta: 100/, x1 === 1, x2 === -9)
+  expect(BHASKARA.HISTORY()).toEqual('a: 1 b: 8 c: -9 delta: 100\nx1: 1 x2: -9')
 });
