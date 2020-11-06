@@ -1,9 +1,14 @@
 
+import './initDebugger'
 import * as t from '@babel/types';
 import { PluginObj, types } from "@babel/core";
 import { NodePath } from "@babel/traverse";
 import generate from "@babel/generator";
+import { DEBUG } from "../lib/index";
+
 // const plugin: (p)=>Visitor
+
+module.exports['x'] = 1
 
 export default (() => {
 
@@ -37,19 +42,28 @@ export default (() => {
           && !object.scope.getBinding(dbgidentifier)
           && object.scope.hasGlobal(dbgidentifier)
         if (isH5) {
-          const mode = state.opts.mode || process.env.NODE_ENV || 'development'
+          const mode = process.env.NODE_ENV || state.opts.mode || 'development'
           if (/^production$/gi.test(mode)) {
+            DEBUG.TRACE('REMOVING', t.clone(path.node))
             path.remove();
           } else {
             const property = callee.get("property");
             if (property.isIdentifier({ name: 'LOG' })) transpileLOG()
             else if (property.isIdentifier({ name: 'ASSERT' })) transpileASSERT()
-            else if (property.isIdentifier({ name: 'TRACE' }) || property.isIdentifier({ name: 'CHECK' })) {
-              path.get('expression').replaceWith(
-                t.logicalExpression('&&', t.identifier(dbgidentifier), t.clone(expr.node))
-              )
+            else if (property.isIdentifier({ name: 'RESET' })) {
+              DEBUG.TRACE('RESET', expr.node.arguments[0])
+              transpileOthers()
+            }
+            else if (property.isIdentifier({ name: 'TRACE' })) {
+              DEBUG.TRACE('TRACE', expr.node.arguments[0])
+              transpileOthers()
+            }
+            else if (property.isIdentifier({ name: 'CHECK' })) {
+              DEBUG.TRACE('CHECK', expr.node.arguments[0])
+              transpileOthers()
             }
             else if (property.isIdentifier({ name: 'INIT' })) {
+              DEBUG.TRACE('INIT', expr.node.arguments[0])
               const arg0: t.FunctionExpression = expr.node.arguments[0] as any
               path.get('expression').replaceWith(t.callExpression(t.clone(arg0), []))
             }
@@ -58,6 +72,7 @@ export default (() => {
         }
 
         function transpileLOG() {
+          DEBUG.TRACE('LOG', expr.node.arguments[0])
           const nexpr = t.callExpression(t.clone(callee.node), [calleeLoc()]
             .concat(expr.node.arguments.reduce<t.Expression[]>((prev, curr) => {
               const cclone: t.Expression = t.clone(curr) as any
@@ -70,7 +85,9 @@ export default (() => {
             }, [])))
           path.get('expression').replaceWith(t.logicalExpression('&&', t.identifier(dbgidentifier), nexpr))
         }
+
         function transpileASSERT() {
+          DEBUG.TRACE('ASSERT', expr.node.arguments[0])
           const nexpr = t.callExpression(t.clone(callee.node), [calleeLoc()]
             .concat(expr.node.arguments
               .reduce<t.Expression[]>((prev, curr) => {
@@ -81,6 +98,11 @@ export default (() => {
               }, [])))
           path.get('expression').replaceWith(
             t.logicalExpression('&&', t.identifier(dbgidentifier), nexpr)
+          )
+        }
+        function transpileOthers() {
+          path.get('expression').replaceWith(
+            t.logicalExpression('&&', t.identifier(dbgidentifier), t.clone(expr.node))
           )
         }
         function calleeLoc(): t.Expression {
