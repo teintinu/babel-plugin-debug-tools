@@ -1,0 +1,10 @@
+ImportDeclaration: import { H5 } from './DEBUGGER'; mode: development
+ExpressionStatement: H5.ASSERT(typeof a === 'number', a > 0);
+expr.isCallExpression(): true
+identifier: H5 mode: development isH5: true
+ASSERT expr.node.arguments[0]: typeof a === 'number'
+ExpressionStatement: H5.ASSERT(typeof b === 'number', b > 0);
+expr.isCallExpression(): true
+identifier: H5 mode: development isH5: true
+ASSERT expr.node.arguments[0]: typeof b === 'number'
+VariableDeclaration: var _DEBUGGER = require("./DEBUGGER"); mode: development

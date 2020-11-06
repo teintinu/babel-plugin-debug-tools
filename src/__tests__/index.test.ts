@@ -48,7 +48,7 @@ describe('babel-debug-tools', () => {
     })
   })
 
-  describe.skip('ASSERT', () => {
+  describe('ASSERT', () => {
     it('production', () => {
       DEBUG.RESET()
       const { code, output } = transform('ASSERT', 'production')
