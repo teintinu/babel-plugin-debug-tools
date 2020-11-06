@@ -1,8 +1,8 @@
-import '../initDebugger'
+
 import * as path from 'path';
 import * as babel from "@babel/core";
 import { toMatchFile } from 'jest-file-snapshot';
-import DEBUG from '../initDEBUG'
+import { DEBUG } from '../initDEBUG'
 
 expect.extend({ toMatchFile });
 
@@ -34,17 +34,17 @@ const configs = {
 describe('babel-debug-tools', () => {
 
   describe('LOG', () => {
-    it('production', () => {
+    it.only('production', () => {
       DEBUG.RESET()
       const { code, output } = transform('LOG', 'production')
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.trace')
       expect(code).toMatchFile(output)
-      expect(DEBUG.TRACE()).toMatchFile(output + '.trace')
     })
     it('development', () => {
       DEBUG.RESET()
       const { code, output } = transform('LOG', 'development')
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.trace')
       expect(code).toMatchFile(output)
-      expect(DEBUG.TRACE()).toMatchFile(output + '.trace')
     })
   })
 
@@ -52,14 +52,14 @@ describe('babel-debug-tools', () => {
     it('production', () => {
       DEBUG.RESET()
       const { code, output } = transform('ASSERT', 'production')
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.trace')
       expect(code).toMatchFile(output)
-      expect(DEBUG.TRACE()).toMatchFile(output + '.trace')
     })
     it('development', () => {
       DEBUG.RESET()
       const { code, output } = transform('ASSERT', 'development')
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.trace')
       expect(code).toMatchFile(output)
-      expect(DEBUG.TRACE()).toMatchFile(output + '.trace')
     })
   })
 
@@ -67,14 +67,14 @@ describe('babel-debug-tools', () => {
     it('production', () => {
       DEBUG.RESET()
       const { code, output } = transform('TRACE', 'production')
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.trace')
       expect(code).toMatchFile(output)
-      expect(DEBUG.TRACE()).toMatchFile(output + '.trace')
     })
     it('development', () => {
       DEBUG.RESET()
       const { code, output } = transform('TRACE', 'development')
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.trace')
       expect(code).toMatchFile(output)
-      expect(DEBUG.TRACE()).toMatchFile(output + '.trace')
     })
   })
 

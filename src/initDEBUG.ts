@@ -1,24 +1,27 @@
+import generate from "@babel/generator";
 
 let traceLog: string[] = [];
 
-const DEBUG: H5 = {
-  LOG(loc, ...args) {
-    console.log.apply(console, formatArgs(args, loc));
+export const DEBUG: H5 = {
+  LOG() {
+    console.log(formatArgs(arguments, 1));
   },
-  ASSERT(loc, ...args) {
-    args.forEach((arg) => {
-      if (!args[1]) throw new Error('ASSERT FAIL: ' + arg[0] + ' at ' + formatLoc(loc));
-    });
+  ASSERT() {
+    const loc = arguments[0]
+    for (let i = 1; i < arguments.length; i++) {
+      const arg = arguments[i]
+      if (!arg[1]) throw new Error('ASSERT FAIL: ' + arg[0] + ' at ' + formatLoc(loc));
+    }
   },
-  RESET(...args) {
+  RESET() {
     traceLog = [];
   },
-  TRACE: ((...args: any[]) => {
-    if (args.length)
-      traceLog.push(JSON.stringify(formatArgs(args)));
-    else
-      return traceLog;
-  }) as any,
+  HISTORY() {
+    return traceLog.join('\n')
+  },
+  TRACE() {
+    traceLog.push(formatArgs(arguments, 0));
+  },
   CHECK(regExp) {
     return traceLog.some(l => regExp.test(l))
   }
@@ -27,27 +30,37 @@ const DEBUG: H5 = {
 function formatLoc(loc: H5Loc) {
   return (loc.filename || '') + ':' + loc.line + ':' + loc.column + ' ';
 }
-function formatArgs(args: any[], loc?: H5Loc) {
-  const flatArgs = []
-  args.forEach((arg) => {
-    if (Array.isArray(args) && args.length == 2) {
-      flatArgs.push(arg[0])
-      flatArgs.push(arg[1])
+function formatArg(arg: any): string {
+  if (arg && arg.type) {
+    try {
+      return generate(arg, {}).code || ''
+    } catch (err) {
+      return 'err: ' + err.message
     }
-    else flatArgs.push(arg)
-  })
-  if (loc)
-    flatArgs.push(formatLoc(loc))
-  return flatArgs
+  }
+  if (typeof arg === 'string') return arg
+  return JSON.stringify(arg)
 }
-
-export default DEBUG
+function formatArgs(args: IArguments, sLoc: 0 | 1): string {
+  const flatArgs: string[] = []
+  for (let i = 0; i < args.length - sLoc; i++) {
+    const arg = args[i]
+    if (Array.isArray(arg) && arg.length == 2) {
+      flatArgs.push(formatArg(arg[0]))
+      flatArgs.push(formatArg(arg[1]))
+    }
+    else flatArgs.push(formatArg(arg))
+  }
+  if (sLoc)
+    flatArgs.push(formatArg(formatLoc(args[args.length - 1])))
+  return flatArgs.join(' ')
+}
 
 export interface H5 {
   LOG(loc: H5Loc, ...args: any[]): void
   ASSERT(loc: H5Loc, ...args: any[]): void
   RESET(): void
-  TRACE(): string[]
+  HISTORY(): string
   TRACE(...args: any[]): void
   CHECK(regExpr: RegExp, ...args: any[]): void
 }

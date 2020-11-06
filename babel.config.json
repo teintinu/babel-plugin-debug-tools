@@ -14,12 +14,12 @@
     ]
   ],
   "plugins": [
-    "@babel/plugin-transform-typescript",
     [
       "./lib/index.js",
       {
         "identifier": "DEBUG"
       }
-    ]
+    ],
+    "@babel/plugin-transform-typescript"
   ]
 }
