@@ -1,10 +1,20 @@
-ImportDeclaration: import { H5 } from './DEBUGGER'; mode: development
-ExpressionStatement: H5.LOG("sum", typeof a === 'number', a > 0);
-expr.isCallExpression(): true
-identifier: H5 mode: development isH5: true
-LOG: "sum"
-ExpressionStatement: H5.LOG("sum", typeof b === 'number', b > 0);
-expr.isCallExpression(): true
-identifier: H5 mode: development isH5: true
-LOG: "sum"
-VariableDeclaration: var _DEBUGGER = require("./DEBUGGER"); mode: development
+"ImportDeclaration": import { H5 } from './DEBUGGER'; "mode": "development"
+"ExpressionStatement": H5.LOG("sum", typeof a === 'number', a > 0);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": true
+"LOG": "sum"
+"GENERATED": H5.LOG({
+  filename: "/src/__fixtures__/LOG/code.js",
+  line: 4,
+  column: 2
+}, "sum", ["typeof a === 'number'", typeof a === 'number'], ["a > 0", a > 0])
+"ExpressionStatement": H5.LOG("sum", typeof b === 'number', b > 0);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": true
+"LOG": "sum"
+"GENERATED": H5.LOG({
+  filename: "/src/__fixtures__/LOG/code.js",
+  line: 5,
+  column: 2
+}, "sum", ["typeof b === 'number'", typeof b === 'number'], ["b > 0", b > 0])
+"VariableDeclaration": var _DEBUGGER = require("./DEBUGGER"); "mode": "development"

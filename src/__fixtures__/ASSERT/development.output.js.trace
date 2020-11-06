@@ -1,14 +1,49 @@
-ImportDeclaration: import { H5 } from './DEBUGGER'; mode: development
-ExpressionStatement: H5.ASSERT(typeof a === 'number', a > 0);
-expr.isCallExpression(): true
-identifier: H5 mode: development isH5: true
-ASSERT expr.node.arguments[0]: typeof a === 'number'
-ExpressionStatement: H5.ASSERT(typeof b === 'number', 0 < b);
-expr.isCallExpression(): true
-identifier: H5 mode: development isH5: true
-ASSERT expr.node.arguments[0]: typeof b === 'number'
-ExpressionStatement: H5.ASSERT(!(a - b));
-expr.isCallExpression(): true
-identifier: H5 mode: development isH5: true
-ASSERT expr.node.arguments[0]: !(a - b)
-VariableDeclaration: var _DEBUGGER = require("./DEBUGGER"); mode: development
+"ImportDeclaration": import { H5 } from './DEBUGGER'; "mode": "development"
+"ExpressionStatement": H5.ASSERT(typeof a === 'number', a > 0);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": true
+"ASSERT" "expr.node": H5.ASSERT(typeof a === 'number', a > 0)
+"t.isRegExpLiteral(curr)": false
+"t.isBinaryExpression(cclone)": true "t.isUnaryExpression(cclone)": false
+"t.isRegExpLiteral(curr)": false
+"t.isBinaryExpression(cclone)": true "t.isUnaryExpression(cclone)": false
+"GENERATED": H5.ASSERT({
+  filename: "/src/__fixtures__/ASSERT/code.js",
+  line: 4,
+  column: 2
+}, ["typeof a === 'number'", typeof a === 'number', {
+  "typeof a": typeof a
+}], ["a > 0", a > 0, {
+  "a": a
+}])
+"ExpressionStatement": H5.ASSERT(typeof b === 'number', 0 < b);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": true
+"ASSERT" "expr.node": H5.ASSERT(typeof b === 'number', 0 < b)
+"t.isRegExpLiteral(curr)": false
+"t.isBinaryExpression(cclone)": true "t.isUnaryExpression(cclone)": false
+"t.isRegExpLiteral(curr)": false
+"t.isBinaryExpression(cclone)": true "t.isUnaryExpression(cclone)": false
+"GENERATED": H5.ASSERT({
+  filename: "/src/__fixtures__/ASSERT/code.js",
+  line: 5,
+  column: 2
+}, ["typeof b === 'number'", typeof b === 'number', {
+  "typeof b": typeof b
+}], ["0 < b", 0 < b, {
+  "b": b
+}])
+"ExpressionStatement": H5.ASSERT(!(a - b));
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": true
+"ASSERT" "expr.node": H5.ASSERT(!(a - b))
+"t.isRegExpLiteral(curr)": false
+"t.isBinaryExpression(cclone)": false "t.isUnaryExpression(cclone)": true
+"GENERATED": H5.ASSERT({
+  filename: "/src/__fixtures__/ASSERT/code.js",
+  line: 6,
+  column: 2
+}, ["!(a - b)", !(a - b), {
+  "a - b": a - b
+}])
+"VariableDeclaration": var _DEBUGGER = require("./DEBUGGER"); "mode": "development"

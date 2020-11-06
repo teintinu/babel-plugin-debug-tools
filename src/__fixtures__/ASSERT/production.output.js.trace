@@ -1,14 +1,14 @@
-ImportDeclaration: import { H5 } from './DEBUGGER'; mode: production
-Removing import
-ExpressionStatement: H5.ASSERT(typeof a === 'number', a > 0);
-expr.isCallExpression(): true
-identifier: H5 mode: production isH5: true
-Removing node
-ExpressionStatement: H5.ASSERT(typeof b === 'number', 0 < b);
-expr.isCallExpression(): true
-identifier: H5 mode: production isH5: true
-Removing node
-ExpressionStatement: H5.ASSERT(!(a - b));
-expr.isCallExpression(): true
-identifier: H5 mode: production isH5: true
-Removing node
+"ImportDeclaration": import { H5 } from './DEBUGGER'; "mode": "production"
+"Removing import"
+"ExpressionStatement": H5.ASSERT(typeof a === 'number', a > 0);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "production" "isH5": true
+"Removing node"
+"ExpressionStatement": H5.ASSERT(typeof b === 'number', 0 < b);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "production" "isH5": true
+"Removing node"
+"ExpressionStatement": H5.ASSERT(!(a - b));
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "production" "isH5": true
+"Removing node"

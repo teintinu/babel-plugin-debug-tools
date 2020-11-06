@@ -107,21 +107,25 @@ export default (() => {
             return prev
           }, []))
           const nexpr = t.callExpression(t.clone(callee.node), args)
+          DEBUG.TRACE({ 'GENERATED': nexpr })
           path.get('expression').replaceWith(nexpr)
         }
 
         function transpileASSERT() {
-          DEBUG.TRACE('ASSERT', expr.node.arguments[0])
+          DEBUG.TRACE('ASSERT', expr.node)
+          DEBUG.ASSERT(expr.node.arguments.length > 0)
           const nexpr = t.callExpression(t.clone(callee.node), [calleeLoc()]
             .concat(expr.node.arguments
               .reduce<t.Expression[]>((prev, curr) => {
+                DEBUG.TRACE(t.isRegExpLiteral(curr))
                 if (t.isRegExpLiteral(curr)) {
-                  prev.push(curr)
+                  prev.push(t.clone(curr))
                 } else {
                   const cclone: t.Expression = t.clone(curr) as any
                   const cname = t.stringLiteral(generate(cclone).code)
                   const aexpr = t.arrayExpression([cname, cclone])
                   prev.push(aexpr)
+                  DEBUG.TRACE(t.isBinaryExpression(cclone), t.isUnaryExpression(cclone))
                   if (t.isBinaryExpression(cclone)) {
                     const binExpr = t.objectExpression([]);
                     const left: t.Expression = t.clone(cclone.left) as any
@@ -145,6 +149,7 @@ export default (() => {
                 }
                 return prev
               }, [])))
+          DEBUG.TRACE({ 'GENERATED': nexpr })
           path.get('expression').replaceWith(nexpr)
         }
         function transpileOthers() {

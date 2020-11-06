@@ -1,10 +1,10 @@
-ImportDeclaration: import { H5 } from './DEBUGGER'; mode: production
-Removing import
-ExpressionStatement: H5.LOG("sum", typeof a === 'number', a > 0);
-expr.isCallExpression(): true
-identifier: H5 mode: production isH5: true
-Removing node
-ExpressionStatement: H5.LOG("sum", typeof b === 'number', b > 0);
-expr.isCallExpression(): true
-identifier: H5 mode: production isH5: true
-Removing node
+"ImportDeclaration": import { H5 } from './DEBUGGER'; "mode": "production"
+"Removing import"
+"ExpressionStatement": H5.LOG("sum", typeof a === 'number', a > 0);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "production" "isH5": true
+"Removing node"
+"ExpressionStatement": H5.LOG("sum", typeof b === 'number', b > 0);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "production" "isH5": true
+"Removing node"

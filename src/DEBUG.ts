@@ -8,7 +8,7 @@ export const DEBUG: H5 = {
     console.log(formatArgs(arguments, 1));
   },
   ASSERT() {
-    const loc = arguments[0]
+    const loc: H5Loc = arguments[0]
     for (let i = 1; i < arguments.length; i++) {
       const arg = arguments[i]
       if (Array.isArray(arg)) {
@@ -31,7 +31,7 @@ export const DEBUG: H5 = {
   TRACE() {
     traceLog.push(formatArgs(arguments, 0));
   }
-}
+} as any
 
 function formatLoc(loc: H5Loc) {
   return (loc.filename || '') + ':' + loc.line + ':' + loc.column + ' ';
@@ -44,7 +44,6 @@ function formatArg(arg: any): string {
       return 'err: ' + err.message
     }
   }
-  if (typeof arg === 'string') return arg
   return JSON.stringify(arg)
 }
 function formatArgs(args: IArguments, sLoc: 0 | 1): string {
@@ -61,9 +60,17 @@ function formatArgs(args: IArguments, sLoc: 0 | 1): string {
   return flatArgs.join(' ')
 }
 
-export interface H5 {
+export interface H5Use {
   LOG(loc: H5Loc, ...args: any[]): void
   ASSERT(loc: H5Loc, ...args: any[]): void
+  RESET(): void
+  HISTORY(): string
+  TRACE(...args: any[]): void
+}
+
+export interface H5 {
+  LOG(...args: any[]): void
+  ASSERT(...args: any[]): void
   RESET(): void
   HISTORY(): string
   TRACE(...args: any[]): void
