@@ -22,7 +22,7 @@ function sum(a,b) {
   return a+b
 }
 ```
-### TRACE and CHECK
+### TRACE 
 Useful for test local variables on test units. It's not for production mode.
 ```javascript
 // lib.js
@@ -40,7 +40,7 @@ it(()=>{
   H5.RESET() 
   → tracelog = [] // traceLog is a global
   const result = quadraticEquation(1, 8, -9) // x² + 8x - 9 = 0
-  const deltaWasTraced = H5.CHECK(/delta=100/} 
+  const deltaWasTraced = H5.ASSERT(/delta=100/} 
   → const deltaWasTraced = traceLog.some(l=>/delta=100/.test(l)))
   except(deltaWasTraced).toBe(true)
   except(H5.HISTORY()).toBe('a=1 b=8 c=-9 delta=100')
