@@ -71,7 +71,8 @@ module.exports = function (plugin) {
         function calleeLoc() {
           const loc = callee.node.loc
           return t.objectExpression([
-            t.objectProperty(t.identifier('filename'), state.filename ? t.stringLiteral(state.filename.replace(/^.*__fixtures__/, 'fixtures')) : t.identifier('undefined')),
+            t.objectProperty(t.identifier('filename'), state.filename ?
+              t.stringLiteral(state.filename.replace(state.cwd, '')) : t.identifier('undefined')),
             t.objectProperty(t.identifier('line'), t.numericLiteral(loc.start.line)),
             t.objectProperty(t.identifier('column'), t.numericLiteral(loc.start.column)),
           ])
