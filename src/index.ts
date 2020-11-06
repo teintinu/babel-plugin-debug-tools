@@ -49,7 +49,7 @@ export default (() => {
         }
       },
       ExpressionStatement(path, state) {
-        DEBUG.TRACE({ 'ExpressionStatement: ': t.clone(path.node) })
+        DEBUG.TRACE({ ExpressionStatement: t.clone(path.node) })
         const expr: NodePath<t.CallExpression> = path.get('expression') as any
         DEBUG.TRACE(expr.isCallExpression())
         if (!(expr && expr.isCallExpression())) return
@@ -66,7 +66,7 @@ export default (() => {
         DEBUG.TRACE(identifier, mode, isH5)
         if (isH5) {
           if (mode === 'production') {
-            DEBUG.TRACE({ 'REMOVING: ': t.clone(path.node) })
+            DEBUG.TRACE('Removing node')
             path.remove();
           } else {
             const property = callee.get("property");
@@ -100,7 +100,7 @@ export default (() => {
               cclone.properties.forEach((p) => {
                 if (t.isObjectProperty(p)) {
                   const cname = t.isIdentifier(p.key) ? t.stringLiteral(p.key.name) : t.clone(p.key)
-                  prev.push(t.arrayExpression([cname, t.clone(p.value) as any]))
+                  prev.push(t.arrayExpression([cname, t.clone(p.value as any)]))
                 }
               })
             }

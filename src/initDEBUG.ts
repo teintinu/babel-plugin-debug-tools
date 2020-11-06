@@ -46,8 +46,7 @@ function formatArgs(args: IArguments, sLoc: 0 | 1): string {
   for (let i = 0; i < args.length - sLoc; i++) {
     const arg = args[i]
     if (Array.isArray(arg) && arg.length == 2) {
-      flatArgs.push(formatArg(arg[0]))
-      flatArgs.push(formatArg(arg[1]))
+      flatArgs.push(formatArg(arg[0]) + ': ' + formatArg(arg[1]))
     }
     else flatArgs.push(formatArg(arg))
   }
