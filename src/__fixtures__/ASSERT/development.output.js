@@ -1,3 +1,5 @@
+"use strict";
+
 function sum(a, b) {
   H5 && H5.ASSERT({
     filename: undefined,
