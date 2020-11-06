@@ -16,6 +16,7 @@
     "prepublish": "npm run build-lib && npm test && npm run bhaskara",
     "bhaskara": "cd sampleProject && npm i && npm test",
     "test": "jest",
+    "ci": "jest",
     "syntax-check": "npx tsc -p ./tsconfig.json"
   },
   "keywords": [
