@@ -15,7 +15,7 @@
     "build": "NODE_ENV=production npx babel --config-file ./babel.config.json --out-file ./lib/index.js ./src/index.ts",
     "prepublish": "npm run build && npm test ",
     "bhaskara": "cd sampleProject && npm i && npm test",
-    "test": "jest && npm run bhaskara",
+    "test": "jest",
     "syntax-check": "npx tsc -p ./tsconfig.json"
   },
   "keywords": [
