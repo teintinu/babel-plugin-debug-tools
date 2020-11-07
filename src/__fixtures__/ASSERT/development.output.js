@@ -45,5 +45,11 @@ function sum(a, b) {
     "a - b": _arg
   }]);
 
+  _DEBUGGER.H5.assertString({
+    filename: "/src/__fixtures__/ASSERT/code.js",
+    line: 7,
+    column: 2
+  }, ["typeof a"], [typeof a]);
+
   return a + b;
 }

@@ -30,8 +30,18 @@ export const DEBUG: H5 = {
   },
   TRACE() {
     traceLog.push(formatArgs(arguments, 0));
+  },
+  assertString() { // Sample of custom method
+    const loc = arguments[0]
+    const codes = arguments[1]
+    const values = arguments[2]
+    for (let i = 0; i < codes.length; i++) {
+      const code = codes[i]
+      const value = values[i]
+      if (typeof value !== 'string') throw new Error(code + ' it not a string at ' + formatLoc(loc))
+    }
   }
-} as any
+}
 
 function formatLoc(loc: H5Loc) {
   return (loc.filename || '') + ':' + loc.line + ':' + loc.column + ' ';
@@ -69,6 +79,7 @@ export interface H5Use {
 }
 
 export interface H5 {
+  assertString(...args: any[]): void
   LOG(...args: any[]): void
   ASSERT(...args: any[]): void
   RESET(): void

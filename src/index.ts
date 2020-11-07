@@ -65,6 +65,7 @@ export default (() => {
         const mode = state.opts.mode || process.env.NODE_ENV || 'development'
         DEBUG.TRACE(identifier, mode, isH5)
         if (isH5) {
+          DEBUG.assertString(identifier, mode)
           if (mode === 'production') {
             DEBUG.TRACE('Removing node')
             path.remove();
@@ -74,7 +75,7 @@ export default (() => {
             else if (property.isIdentifier({ name: 'ASSERT' })) transpileASSERT()
             else if (property.isIdentifier({ name: 'RESET' })) {
               DEBUG.TRACE('RESET', expr.node.arguments[0])
-              transpileOthers()
+              transpileCloning()
             }
             else if (property.isIdentifier({ name: 'TRACE' })) transpileLOGorTRACE('TRACE')
             else if (property.isIdentifier({ name: 'INIT' })) {
@@ -82,7 +83,18 @@ export default (() => {
               const arg0: t.FunctionExpression = expr.node.arguments[0] as any
               path.get('expression').replaceWith(t.callExpression(t.clone(arg0), []))
             }
-            else throw path.buildCodeFrameError("Invalid command");
+            else {
+              const method: t.Identifier = property.node as any
+              let isCustom = false
+              if (t.isIdentifier(method)) {
+                if (/^[a-z]\w+$/.test(method.name)) {
+                  isCustom = true
+                  transpileCustom()
+                }
+              }
+              if (!isCustom)
+                throw path.buildCodeFrameError("Invalid command");
+            }
           }
         }
 
@@ -173,8 +185,16 @@ export default (() => {
           DEBUG.TRACE({ 'GENERATED': nexpr })
           path.get('expression').replaceWith(nexpr)
         }
-        function transpileOthers() {
+        function transpileCloning() {
           path.get('expression').replaceWith(t.clone(expr.node))
+        }
+        function transpileCustom() {
+          DEBUG.TRACE('customMethod', expr.node)
+          const codes = t.arrayExpression(expr.node.arguments.map(arg => t.stringLiteral(generate(t.clone(arg)).code)))
+          const values = t.arrayExpression(expr.node.arguments.map(arg => t.clone(arg) as t.Expression))
+          const nexpr = t.callExpression(t.clone(callee.node), [calleeLoc(), codes, values])
+          DEBUG.TRACE({ 'GENERATED': nexpr })
+          path.get('expression').replaceWith(nexpr)
         }
         function calleeLoc(): t.Expression {
           const loc = callee.node.loc

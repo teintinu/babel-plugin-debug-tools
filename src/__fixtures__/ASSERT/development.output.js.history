@@ -46,6 +46,15 @@
 }, ["!(a - b)", !_arg, {
   "a - b": _arg
 }])
+"ExpressionStatement": H5.assertString(typeof a);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": true
+"customMethod" "expr.node": H5.assertString(typeof a)
+"GENERATED": H5.assertString({
+  filename: "/src/__fixtures__/ASSERT/code.js",
+  line: 7,
+  column: 2
+}, ["typeof a"], [typeof a])
 "VariableDeclaration": var _left, _right, _left2, _right2, _left3, _right3, _left4, _right4; "mode": "development"
 "ExpressionStatement": _left = typeof a;
 "expr.isCallExpression()": false
