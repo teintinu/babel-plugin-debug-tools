@@ -123,25 +123,46 @@ export default (() => {
                 } else {
                   const cclone: t.Expression = t.clone(curr) as any
                   const cname = t.stringLiteral(generate(cclone).code)
-                  const aexpr = t.arrayExpression([cname, cclone])
-                  prev.push(aexpr)
                   DEBUG.TRACE(t.isBinaryExpression(cclone), t.isUnaryExpression(cclone))
                   if (t.isBinaryExpression(cclone)) {
+                    const leftId = path.scope.generateUidIdentifier('left')
+                    const cnameleft = t.stringLiteral(generate(cclone.left).code)
+                    const cnameright = t.stringLiteral(generate(cclone.right).code)
+                    const isLiteralleft = t.isLiteral(cclone.left)
+                    const isLiteralright = t.isLiteral(cclone.right)
+
+                    path.scope.push({ id: leftId });
+                    const rightId = path.scope.generateUidIdentifier('right')
+                    path.scope.push({ id: rightId });
+                    path.insertBefore(t.expressionStatement(t.assignmentExpression('=', leftId, t.clone(cclone.left) as any)))
+                    path.insertBefore(t.expressionStatement(t.assignmentExpression('=', rightId, t.clone(cclone.right) as any)))
+
+                    cclone.left = leftId
+                    cclone.right = rightId
+                    const aexpr = t.arrayExpression([cname, cclone])
+                    prev.push(aexpr)
+
                     const binExpr = t.objectExpression([]);
                     const left: t.Expression = t.clone(cclone.left) as any
-                    const cnameleft = t.stringLiteral(generate(left).code)
-                    if (!(t.isLiteral(left))) binExpr.properties.push(t.objectProperty(cnameleft, left))
+                    if (!(isLiteralleft)) binExpr.properties.push(t.objectProperty(cnameleft, left))
                     const right: t.Expression = t.clone(cclone.right) as any
-                    const cnameright = t.stringLiteral(generate(right).code)
-                    if (!(t.isLiteral(right))) binExpr.properties.push(t.objectProperty(cnameright, right))
+                    if (!(isLiteralright)) binExpr.properties.push(t.objectProperty(cnameright, right))
                     aexpr.elements.push(binExpr)
                   }
                   else if (t.isUnaryExpression(cclone)) {
-                    const arg: t.Expression = t.clone(cclone.argument) as any
-                    if (!(t.isLiteral(arg))) {
-                      const cnamearg = t.stringLiteral(generate(arg).code)
+
+                    const argId = path.scope.generateUidIdentifier('arg')
+                    const cnameArg = t.stringLiteral(generate(cclone.argument).code)
+                    const isLiteralArg = t.isLiteral(cclone.argument)
+                    path.insertBefore(t.expressionStatement(t.assignmentExpression('=', argId, t.clone(cclone.argument) as any)))
+
+                    cclone.argument = argId
+                    const aexpr = t.arrayExpression([cname, cclone])
+                    prev.push(aexpr)
+
+                    if (!(isLiteralArg)) {
                       aexpr.elements.push(t.objectExpression([
-                        t.objectProperty(cnamearg, arg)
+                        t.objectProperty(cnameArg, argId)
                       ]))
                     }
                   }

@@ -11,10 +11,10 @@
   filename: "/src/__fixtures__/ASSERT/code.js",
   line: 4,
   column: 2
-}, ["typeof a === 'number'", typeof a === 'number', {
-  "typeof a": typeof a
-}], ["a > 0", a > 0, {
-  "a": a
+}, ["typeof a === 'number'", _left === _right, {
+  "typeof a": _left
+}], ["a > 0", _left2 > _right2, {
+  "a": _left2
 }])
 "ExpressionStatement": H5.ASSERT(typeof b === 'number', 0 < b);
 "expr.isCallExpression()": true
@@ -28,10 +28,10 @@
   filename: "/src/__fixtures__/ASSERT/code.js",
   line: 5,
   column: 2
-}, ["typeof b === 'number'", typeof b === 'number', {
-  "typeof b": typeof b
-}], ["0 < b", 0 < b, {
-  "b": b
+}, ["typeof b === 'number'", _left3 === _right3, {
+  "typeof b": _left3
+}], ["0 < b", _left4 < _right4, {
+  "b": _right4
 }])
 "ExpressionStatement": H5.ASSERT(!(a - b));
 "expr.isCallExpression()": true
@@ -43,7 +43,26 @@
   filename: "/src/__fixtures__/ASSERT/code.js",
   line: 6,
   column: 2
-}, ["!(a - b)", !(a - b), {
-  "a - b": a - b
+}, ["!(a - b)", !_arg, {
+  "a - b": _arg
 }])
+"VariableDeclaration": var _left, _right, _left2, _right2, _left3, _right3, _left4, _right4; "mode": "development"
+"ExpressionStatement": _left = typeof a;
+"expr.isCallExpression()": false
+"ExpressionStatement": _right = 'number';
+"expr.isCallExpression()": false
+"ExpressionStatement": _left2 = a;
+"expr.isCallExpression()": false
+"ExpressionStatement": _right2 = 0;
+"expr.isCallExpression()": false
+"ExpressionStatement": _left3 = typeof b;
+"expr.isCallExpression()": false
+"ExpressionStatement": _right3 = 'number';
+"expr.isCallExpression()": false
+"ExpressionStatement": _left4 = 0;
+"expr.isCallExpression()": false
+"ExpressionStatement": _right4 = b;
+"expr.isCallExpression()": false
+"ExpressionStatement": _arg = a - b;
+"expr.isCallExpression()": false
 "VariableDeclaration": var _DEBUGGER = require("./DEBUGGER"); "mode": "development"
