@@ -7,6 +7,14 @@ var _debug = require("./debug");
 test('x² + 8x - 9 = 0', () => {
   _debug.BHASKARA.RESET();
 
+  _debug.BHASKARA.ASSERT({
+    filename: "/sampleProject/src/bhaskara.test.js",
+    line: 6,
+    column: 2
+  }, ["typeof quadraticEquation === 'function'", typeof _bhaskara.quadraticEquation === 'function', {
+    "typeof quadraticEquation": typeof quadraticEquation
+  }]);
+
   const {
     x1,
     x2
@@ -14,7 +22,7 @@ test('x² + 8x - 9 = 0', () => {
 
   _debug.BHASKARA.ASSERT({
     filename: "/sampleProject/src/bhaskara.test.js",
-    line: 7,
+    line: 8,
     column: 2
   }, /delta: 100/, ["x1 === 1", x1 === 1, {
     "x1": x1
