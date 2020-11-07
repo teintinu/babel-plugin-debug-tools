@@ -1,0 +1,41 @@
+"ImportDeclaration": import { BHASKARA } from './debug'; "mode": "development"
+"ExpressionStatement": BHASKARA.ASSERT(a !== 0);
+"expr.isCallExpression()": true
+"identifier": "BHASKARA" "mode": "development" "isH5": true
+"ASSERT" "expr.node": BHASKARA.ASSERT(a !== 0)
+"t.isRegExpLiteral(curr)": false
+"t.isBinaryExpression(cclone)": true "t.isUnaryExpression(cclone)": false
+"GENERATED": BHASKARA.ASSERT({
+  filename: "/sampleProject/src/bhaskara.js",
+  line: 4,
+  column: 2
+}, ["a !== 0", _left !== _right, {
+  "a": _left
+}])
+"VariableDeclaration": const delta = b * b - 4 * a * c; // b² – 4ac "mode": "development"
+"ExpressionStatement": // b² – 4ac
+BHASKARA.TRACE(a, b, c, delta);
+"expr.isCallExpression()": true
+"identifier": "BHASKARA" "mode": "development" "isH5": true
+"LOG": a
+"GENERATED": BHASKARA.TRACE(["a", a], ["b", b], ["c", c], ["delta", delta])
+"VariableDeclaration": const x1 = (-b + Math.sqrt(delta)) / (2 * a); "mode": "development"
+"VariableDeclaration": const x2 = (-b - Math.sqrt(delta)) / (2 * a); "mode": "development"
+"ExpressionStatement": BHASKARA.TRACE(x1, x2);
+"expr.isCallExpression()": true
+"identifier": "BHASKARA" "mode": "development" "isH5": true
+"LOG": x1
+"GENERATED": BHASKARA.TRACE(["x1", x1], ["x2", x2])
+"VariableDeclaration": var _left, _right; "mode": "development"
+"ExpressionStatement": _left = a;
+"expr.isCallExpression()": false
+"ExpressionStatement": _right = 0;
+"expr.isCallExpression()": false
+"ExpressionStatement": Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+"expr.isCallExpression()": true
+"identifier": "BHASKARA" "mode": "development" "isH5": false
+"ExpressionStatement": exports.quadraticEquation = quadraticEquation;
+"expr.isCallExpression()": false
+"VariableDeclaration": var _debug = require("./debug"); "mode": "development"

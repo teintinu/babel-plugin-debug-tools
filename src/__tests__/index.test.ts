@@ -32,7 +32,7 @@ const configs = {
   bhaskara: {
     plugins: [
       [
-        require.resolve('../../lib/index'),
+        require.resolve('../index'),
         {
           mode: 'development',
           identifier: 'BHASKARA'

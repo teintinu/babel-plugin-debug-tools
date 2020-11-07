@@ -1,0 +1,71 @@
+"ImportDeclaration": import { quadraticEquation } from './bhaskara'; "mode": "development"
+"ImportDeclaration": import { BHASKARA } from './debug'; "mode": "development"
+"ExpressionStatement": test('x² + 8x - 9 = 0', () => {
+  BHASKARA.RESET();
+  BHASKARA.ASSERT(typeof quadraticEquation === 'function');
+  const {
+    x1,
+    x2
+  } = quadraticEquation(1, 8, -9);
+  BHASKARA.ASSERT(/delta: 100/, x1 === 1, x2 === -9);
+  expect(BHASKARA.HISTORY()).toEqual('a: 1 b: 8 c: -9 delta: 100\nx1: 1 x2: -9');
+});
+"expr.isCallExpression()": true
+"ExpressionStatement": BHASKARA.RESET();
+"expr.isCallExpression()": true
+"identifier": "BHASKARA" "mode": "development" "isH5": true
+"RESET" "expr.node.arguments[0]": undefined
+"ExpressionStatement": BHASKARA.ASSERT(typeof quadraticEquation === 'function');
+"expr.isCallExpression()": true
+"identifier": "BHASKARA" "mode": "development" "isH5": true
+"ASSERT" "expr.node": BHASKARA.ASSERT(typeof quadraticEquation === 'function')
+"t.isRegExpLiteral(curr)": false
+"t.isBinaryExpression(cclone)": true "t.isUnaryExpression(cclone)": false
+"GENERATED": BHASKARA.ASSERT({
+  filename: "/sampleProject/src/bhaskara.test.js",
+  line: 6,
+  column: 2
+}, ["typeof quadraticEquation === 'function'", _left === _right, {
+  "typeof quadraticEquation": _left
+}])
+"VariableDeclaration": const {
+  x1,
+  x2
+} = quadraticEquation(1, 8, -9); "mode": "development"
+"ExpressionStatement": BHASKARA.ASSERT(/delta: 100/, x1 === 1, x2 === -9);
+"expr.isCallExpression()": true
+"identifier": "BHASKARA" "mode": "development" "isH5": true
+"ASSERT" "expr.node": BHASKARA.ASSERT(/delta: 100/, x1 === 1, x2 === -9)
+"t.isRegExpLiteral(curr)": true
+"t.isRegExpLiteral(curr)": false
+"t.isBinaryExpression(cclone)": true "t.isUnaryExpression(cclone)": false
+"t.isRegExpLiteral(curr)": false
+"t.isBinaryExpression(cclone)": true "t.isUnaryExpression(cclone)": false
+"GENERATED": BHASKARA.ASSERT({
+  filename: "/sampleProject/src/bhaskara.test.js",
+  line: 8,
+  column: 2
+}, /delta: 100/, ["x1 === 1", _left2 === _right2, {
+  "x1": _left2
+}], ["x2 === -9", _left3 === _right3, {
+  "x2": _left3,
+  "-9": _right3
+}])
+"ExpressionStatement": expect(BHASKARA.HISTORY()).toEqual('a: 1 b: 8 c: -9 delta: 100\nx1: 1 x2: -9');
+"expr.isCallExpression()": true
+"identifier": "BHASKARA" "mode": "development" "isH5": false
+"VariableDeclaration": var _left, _right, _left2, _right2, _left3, _right3; "mode": "development"
+"ExpressionStatement": _left = typeof quadraticEquation;
+"expr.isCallExpression()": false
+"ExpressionStatement": _right = 'function';
+"expr.isCallExpression()": false
+"ExpressionStatement": _left2 = x1;
+"expr.isCallExpression()": false
+"ExpressionStatement": _right2 = 1;
+"expr.isCallExpression()": false
+"ExpressionStatement": _left3 = x2;
+"expr.isCallExpression()": false
+"ExpressionStatement": _right3 = -9;
+"expr.isCallExpression()": false
+"VariableDeclaration": var _bhaskara = require("./bhaskara"); "mode": "development"
+"VariableDeclaration": var _debug = require("./debug"); "mode": "development"
