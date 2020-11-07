@@ -48,13 +48,13 @@ describe('babel-debug-tools', () => {
     it('production', () => {
       DEBUG.RESET()
       const { code, output } = transform('LOG', 'production')
-      expect(DEBUG.HISTORY()).toMatchFile(output + '.trace')
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.history')
       expect(code).toMatchFile(output)
     })
     it('development', () => {
       DEBUG.RESET()
       const { code, output } = transform('LOG', 'development')
-      expect(DEBUG.HISTORY()).toMatchFile(output + '.trace')
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.history')
       expect(code).toMatchFile(output)
     })
   })
@@ -63,13 +63,13 @@ describe('babel-debug-tools', () => {
     it('production', () => {
       DEBUG.RESET()
       const { code, output } = transform('ASSERT', 'production')
-      expect(DEBUG.HISTORY()).toMatchFile(output + '.trace')
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.history')
       expect(code).toMatchFile(output)
     })
     it('development', () => {
       DEBUG.RESET()
       const { code, output } = transform('ASSERT', 'development')
-      expect(DEBUG.HISTORY()).toMatchFile(output + '.trace')
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.history')
       expect(code).toMatchFile(output)
     })
   })
@@ -78,13 +78,13 @@ describe('babel-debug-tools', () => {
     it('production', () => {
       DEBUG.RESET()
       const { code, output } = transform('TRACE', 'production')
-      expect(DEBUG.HISTORY()).toMatchFile(output + '.trace')
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.history')
       expect(code).toMatchFile(output)
     })
     it('development', () => {
       DEBUG.RESET()
       const { code, output } = transform('TRACE', 'development')
-      expect(DEBUG.HISTORY()).toMatchFile(output + '.trace')
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.history')
       expect(code).toMatchFile(output)
     })
   })
@@ -98,7 +98,7 @@ describe('babel-debug-tools', () => {
           path.join(__dirname, '../..', 'sampleProject/src/bhaskara.js'),
           path.join(__dirname, '../__fixtures__/bhaskara/bhaskara.output.js')
         )
-        expect(DEBUG.HISTORY()).toMatchFile(output + '.trace')
+        expect(DEBUG.HISTORY()).toMatchFile(output + '.history')
         expect(code).toMatchFile(output)
       })
       it('test', () => {
@@ -108,7 +108,7 @@ describe('babel-debug-tools', () => {
           path.join(__dirname, '../..', 'sampleProject/src/bhaskara.test.js'),
           path.join(__dirname, '../__fixtures__/bhaskara/bhaskara.test.output.js')
         )
-        expect(DEBUG.HISTORY()).toMatchFile(output + '.trace')
+        expect(DEBUG.HISTORY()).toMatchFile(output + '.history')
         expect(code).toMatchFile(output)
       })
     })
