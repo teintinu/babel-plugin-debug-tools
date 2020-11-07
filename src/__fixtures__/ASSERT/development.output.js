@@ -43,13 +43,20 @@ function sum(a, b) {
     column: 2
   }, ["!(a - b)", !_arg, {
     "a - b": _arg
-  }]);
+  }]); // H5.ASSERT({ 'cant be equals': !(a - b) }) // named assertion
+  // H5.ASSERT({
+  //   'cant be equals'() {
+  //     return !(a - b)
+  //   }
+  // }) // named assetion with code
+
 
   _DEBUGGER.H5.assertString({
     filename: "/src/__fixtures__/ASSERT/code.js",
-    line: 7,
+    line: 13,
     column: 2
-  }, ["typeof a"], [typeof a]);
+  }, ["typeof a"], [typeof a]); // customMethod, see definition in DEBUGGER.js
+
 
   return a + b;
 }

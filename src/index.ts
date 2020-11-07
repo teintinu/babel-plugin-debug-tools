@@ -124,67 +124,105 @@ export default (() => {
         }
 
         function transpileASSERT() {
+          type Assertion = [string, t.Expression, t.ObjectProperty[]]
           DEBUG.TRACE('ASSERT', expr.node)
           DEBUG.ASSERT(expr.node.arguments.length > 0)
           const nexpr = t.callExpression(t.clone(callee.node), [calleeLoc()]
             .concat(expr.node.arguments
-              .reduce<t.Expression[]>((prev, curr) => {
-                DEBUG.TRACE(t.isRegExpLiteral(curr))
-                if (t.isRegExpLiteral(curr)) {
-                  prev.push(t.clone(curr))
-                } else {
-                  const cclone: t.Expression = t.clone(curr) as any
-                  const cname = t.stringLiteral(generate(cclone).code)
-                  DEBUG.TRACE(t.isBinaryExpression(cclone), t.isUnaryExpression(cclone))
-                  if (t.isBinaryExpression(cclone)) {
-                    const leftId = path.scope.generateUidIdentifier('left')
-                    const cnameleft = t.stringLiteral(generate(cclone.left).code)
-                    const cnameright = t.stringLiteral(generate(cclone.right).code)
-                    const isLiteralleft = t.isLiteral(cclone.left)
-                    const isLiteralright = t.isLiteral(cclone.right)
-
-                    path.scope.push({ id: leftId });
-                    const rightId = path.scope.generateUidIdentifier('right')
-                    path.scope.push({ id: rightId });
-                    path.insertBefore(t.expressionStatement(t.assignmentExpression('=', leftId, t.clone(cclone.left) as any)))
-                    path.insertBefore(t.expressionStatement(t.assignmentExpression('=', rightId, t.clone(cclone.right) as any)))
-
-                    cclone.left = leftId
-                    cclone.right = rightId
-                    const aexpr = t.arrayExpression([cname, cclone])
-                    prev.push(aexpr)
-
-                    const binExpr = t.objectExpression([]);
-                    const left: t.Expression = t.clone(cclone.left) as any
-                    if (!(isLiteralleft)) binExpr.properties.push(t.objectProperty(cnameleft, left))
-                    const right: t.Expression = t.clone(cclone.right) as any
-                    if (!(isLiteralright)) binExpr.properties.push(t.objectProperty(cnameright, right))
-                    aexpr.elements.push(binExpr)
-                  }
-                  else if (t.isUnaryExpression(cclone)) {
-
-                    const argId = path.scope.generateUidIdentifier('arg')
-                    const cnameArg = t.stringLiteral(generate(cclone.argument).code)
-                    const isLiteralArg = t.isLiteral(cclone.argument)
-                    path.insertBefore(t.expressionStatement(t.assignmentExpression('=', argId, t.clone(cclone.argument) as any)))
-
-                    cclone.argument = argId
-                    const aexpr = t.arrayExpression([cname, cclone])
-                    prev.push(aexpr)
-
-                    if (!(isLiteralArg)) {
-                      aexpr.elements.push(t.objectExpression([
-                        t.objectProperty(cnameArg, argId)
-                      ]))
-                    }
-                  }
-                  else throw path.buildCodeFrameError("unsupported expression");
-                }
+              .reduce<Assertion[]>((prev, curr) => {
+                handlExpr(prev, curr as any)
                 return prev
-              }, [])))
+              }, []).map((a) => t.arrayExpression([
+                t.stringLiteral(a[0]), a[1], t.objectExpression(a[2])
+              ]))))
           DEBUG.TRACE({ 'GENERATED': nexpr })
           path.get('expression').replaceWith(nexpr)
+          function handlExpr(assetions: Assertion[], mexpr: t.Expression) {
+            DEBUG.TRACE(t.isRegExpLiteral(mexpr))
+            if (t.isRegExpLiteral(mexpr)) {
+              add(mexpr.pattern, t.clone(mexpr), [])
+            } else if (t.isObjectExpression(mexpr)) {
+              mexpr.properties.forEach(p => {
+                if (t.isSpreadProperty(p))
+                  throw path.buildCodeFrameError("Spread is not supported");
+                if (t.isObjectMethod(p)) {
+                  if (p.params.length)
+                    throw path.buildCodeFrameError("remove arguments of methods");
+                  if (t.isIdentifier(p.key))
+                    add(
+                      p.key.name, t.callExpression(
+                        t.functionExpression(null, [], t.clone(p.body)), []
+                      ), [])
+                  else
+                    throw path.buildCodeFrameError("Spread is not supported");
+
+                } else {
+                  const eaditionalFields: t.ObjectProperty[] = []
+                  const [name, eexpr] = explainExpr(mexpr, eaditionalFields)
+                  add(name, eexpr, eaditionalFields)
+                }
+              })
+            } else {
+              const eaditionalFields: t.ObjectProperty[] = []
+              const [name, eexpr] = explainExpr(mexpr, eaditionalFields)
+              add(name, eexpr, eaditionalFields)
+            }
+            function add(name: string, expr: t.Expression, aditionalFields: t.ObjectProperty[]) {
+              const a: Assertion = [
+                name,
+                expr,
+                aditionalFields
+              ]
+              assetions.push(a)
+              return a
+            }
+          }
+
+          function explainExpr(bigExpr: t.Expression, aditionalFields: t.ObjectProperty[]): [string, t.Expression] {
+            const cclone: t.Expression = t.clone(bigExpr) as any
+            const cname = generate(cclone).code
+            DEBUG.TRACE(t.isBinaryExpression(cclone), t.isUnaryExpression(cclone))
+            if (t.isBinaryExpression(cclone)) {
+              const leftId = path.scope.generateUidIdentifier('left')
+              const cnameleft = t.stringLiteral(generate(cclone.left).code)
+              const cnameright = t.stringLiteral(generate(cclone.right).code)
+              const isLiteralleft = t.isLiteral(cclone.left)
+              const isLiteralright = t.isLiteral(cclone.right)
+
+              path.scope.push({ id: leftId });
+              const rightId = path.scope.generateUidIdentifier('right')
+              path.scope.push({ id: rightId });
+              path.insertBefore(t.expressionStatement(t.assignmentExpression('=', leftId, t.clone(cclone.left) as any)))
+              path.insertBefore(t.expressionStatement(t.assignmentExpression('=', rightId, t.clone(cclone.right) as any)))
+
+              cclone.left = leftId
+              cclone.right = rightId
+
+              const left: t.Expression = t.clone(cclone.left) as any
+              if (!(isLiteralleft)) aditionalFields.push(t.objectProperty(cnameleft, left))
+              const right: t.Expression = t.clone(cclone.right) as any
+              if (!(isLiteralright)) aditionalFields.push(t.objectProperty(cnameright, right))
+              return [cname, cclone]
+
+            }
+            else if (t.isUnaryExpression(cclone)) {
+
+              const argId = path.scope.generateUidIdentifier('arg')
+              const cnameArg = t.stringLiteral(generate(cclone.argument).code)
+              const isLiteralArg = t.isLiteral(cclone.argument)
+              path.insertBefore(t.expressionStatement(t.assignmentExpression('=', argId, t.clone(cclone.argument) as any)))
+
+              cclone.argument = argId
+
+              if (!(isLiteralArg)) {
+                aditionalFields.push(t.objectProperty(cnameArg, argId))
+              }
+              return [cname, cclone]
+            }
+            throw path.buildCodeFrameError("unsupported expression");
+          }
         }
+
         function transpileCloning() {
           path.get('expression').replaceWith(t.clone(expr.node))
         }
