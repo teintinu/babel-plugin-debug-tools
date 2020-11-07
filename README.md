@@ -5,9 +5,10 @@ Babeljs Debug Tools helps you insert debug code and easely remove it when deploy
 Similar to console.log but logs also identifiers and source code position
 ```javascript
 // app.js
+import { H5 } from './debug'
 function sum(a,b) {
   H5.LOG(a,b);
-  → console.log('a='+ a, 'b='+ b, ' at app.js:2:3');
+  → console.log('a='+ a, 'b='+ b, ' at app.js:3:3');
   return a+b;
 }
 ```
@@ -15,10 +16,11 @@ function sum(a,b) {
 Similar to assert but logs also identifier and source code position
 ```javascript
 // app.js
+import { H5 } from './debug'
 function sum(a,b) {
   H5.ASSERT(a>0,b>0)
-  → if (!(a>0)) throw new Error('assert a>0 at app.js:2:3');
-  → if (!(b>0)) throw new Error('assert b>0 at app.js:2:3');
+  → if (!(a>0)) throw new Error('assert a>0 at app.js:3:3');
+  → if (!(b>0)) throw new Error('assert b>0 at app.js:3:3');
   return a+b
 }
 ```
@@ -26,6 +28,7 @@ function sum(a,b) {
 Useful for test local variables on test units. It's not for production mode.
 ```javascript
 // lib.js
+import { H5 } from './debug'
 function quadraticEquation(a,b,c) {
   const delta = b*b - 4*a*c; ← b² – 4ac
   H5.TRACE(a, b, c, delta)
@@ -36,6 +39,7 @@ function quadraticEquation(a,b,c) {
   return {x1, x2}
 }
 // test.js
+import { H5 } from './debug'
 it(()=>{
   H5.RESET() 
   → tracelog = [] // traceLog is a global
@@ -79,20 +83,20 @@ Define plugin transform mode
 ##### identifier
 name of identifier for use with debug tools, default is `H5`
 
-### debug module
-You will need a debug module, like that but customized for your needs.
+### debug.js module
+You will need a debug module, like that but customized to your needs.
 
 See sample project or DEBUG.ts 
 
 ```javascript
 
-let traceLog=[];
+let traceLog = [];
 
 export const H5 = {
-  LOG(loc, ...args) {
-    console.log.apply(console, formatArgs(args, loc));
+  LOG() {
+    console.log(formatArgs(arguments, 1));
   },
-  ASSERT(loc, ...args) {
+  ASSERT() {
     const loc = arguments[0]
     for (let i = 1; i < arguments.length; i++) {
       const arg = arguments[i]
@@ -110,31 +114,37 @@ export const H5 = {
   RESET() {
     traceLog = [];
   },
-  TRACE(...args) {
-    traceLog.push(formatArgs(args));
-  },
   HISTORY() {
     return traceLog.join('\n')
-  },  
-}
+  },
+  TRACE() {
+    traceLog.push(formatArgs(arguments, 0));
+  },
+  CHECK(regExp) {
+    return traceLog.some(l => regExp.test(l))
+  }
+};
 
 function formatLoc(loc) {
   return (loc.filename || '') + ':' + loc.line + ':' + loc.column + ' ';
 }
 function formatArg(arg) {
+  if (typeof arg === 'string') return arg
   return JSON.stringify(arg)
 }
-function formatArgs(args, loc) {
+function formatArgs(args, sLoc) {
   const flatArgs = []
-  args.forEach((arg) => {
-    if (Array.isArray(args) && args.length == 2) {
-      flatArgs.push(arg[0]+': '+formatArg(arg[1]))
+  for (let i = 0; i < args.length - sLoc; i++) {
+    const arg = args[i]
+    if (Array.isArray(arg) && arg.length == 2) {
+      flatArgs.push(formatArg(arg[0]) + ': ' + formatArg(arg[1]))
     }
     else flatArgs.push(formatArg(arg))
-  })
-  if (loc)
-    flatArgs.push(formatLoc(loc))
-  return flatArgs
+  }
+  if (sLoc)
+    flatArgs.push(formatArg(formatLoc(args[args.length - 1])))
+  return flatArgs.join(' ')
 }
+
 
 ```

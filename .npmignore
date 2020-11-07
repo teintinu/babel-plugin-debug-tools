@@ -5,3 +5,4 @@ babel.config.js
 jest.config.js 
 .github
 *.json
+LICENSE
