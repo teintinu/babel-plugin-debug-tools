@@ -1,0 +1,541 @@
+"ImportDeclaration": import * as path from 'path'; "mode": "development"
+"ImportDeclaration": import * as babel from "@babel/core"; "mode": "development"
+"ImportDeclaration": import { toMatchFile } from 'jest-file-snapshot'; "mode": "development"
+"ImportDeclaration": import { DEBUG } from '../DEBUG'; "mode": "development"
+"ExpressionStatement": expect.extend({
+  toMatchFile
+});
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const configs = {
+  production: {
+    plugins: [[require.resolve('../index'), {
+      mode: 'production'
+    }]]
+  },
+  development: {
+    plugins: [[require.resolve('../index'), {
+      mode: 'development'
+    }]]
+  },
+  self: {
+    plugins: [[require.resolve('../index')]]
+  },
+  bhaskara: {
+    plugins: [[require.resolve('../index'), {
+      mode: 'development',
+      identifier: 'BHASKARA'
+    }]]
+  }
+}; "mode": "development"
+"ExpressionStatement": describe('babel-debug-tools', () => {
+  describe('LOG', () => {
+    it('production', () => {
+      DEBUG.RESET();
+      const {
+        code,
+        output
+      } = transform('LOG', 'production');
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+      expect(code).toMatchFile(output);
+    });
+    it('development', () => {
+      DEBUG.RESET();
+      const {
+        code,
+        output
+      } = transform('LOG', 'development');
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+      expect(code).toMatchFile(output);
+    });
+  });
+  describe('ASSERT', () => {
+    it('production', () => {
+      DEBUG.RESET();
+      const {
+        code,
+        output
+      } = transform('ASSERT', 'production');
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+      expect(code).toMatchFile(output);
+    });
+    it('development', () => {
+      DEBUG.RESET();
+      const {
+        code,
+        output
+      } = transform('ASSERT', 'development'); // expect(DEBUG.HISTORY()).toMatchFile(output + '.history')
+
+      expect(code).toMatchFile(output);
+    });
+  });
+  describe('TRACE', () => {
+    it('production', () => {
+      DEBUG.RESET();
+      const {
+        code,
+        output
+      } = transform('TRACE', 'production');
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+      expect(code).toMatchFile(output);
+    });
+    it('development', () => {
+      DEBUG.RESET();
+      const {
+        code,
+        output
+      } = transform('TRACE', 'development');
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+      expect(code).toMatchFile(output);
+    });
+  });
+  describe('sampleProject', () => {
+    describe('BHASKARA transformation', () => {
+      it('lib', () => {
+        DEBUG.RESET();
+        const {
+          code,
+          output
+        } = transformfile('bhaskara', path.join(__dirname, '../..', 'sampleProject/src/bhaskara.js'), path.join(__dirname, '../__fixtures__/bhaskara/bhaskara.output.js'));
+        expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+        expect(code).toMatchFile(output);
+      });
+      it('test', () => {
+        DEBUG.RESET();
+        const {
+          code,
+          output
+        } = transformfile('bhaskara', path.join(__dirname, '../..', 'sampleProject/src/bhaskara.test.js'), path.join(__dirname, '../__fixtures__/bhaskara/bhaskara.test.output.js'));
+        expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+        expect(code).toMatchFile(output);
+      });
+    });
+    describe('self transformation', () => {
+      it('lib', () => {
+        DEBUG.RESET();
+        const {
+          code,
+          output
+        } = transformfile('self', path.join(__dirname, '../index.ts'), path.join(__dirname, '../__fixtures__/self/development.index.output.js'), 'development');
+        expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+        expect(code).toMatchFile(output);
+      });
+      it('test', () => {
+        DEBUG.RESET();
+        const {
+          code,
+          output
+        } = transformfile('self', path.join(__dirname, './index.test.ts'), path.join(__dirname, '../__fixtures__/self/development.index.test.output.js'), 'development');
+        expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+        expect(code).toMatchFile(output);
+      });
+    });
+  });
+});
+"expr.isCallExpression()": true
+"ExpressionStatement": describe('LOG', () => {
+  it('production', () => {
+    DEBUG.RESET();
+    const {
+      code,
+      output
+    } = transform('LOG', 'production');
+    expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+    expect(code).toMatchFile(output);
+  });
+  it('development', () => {
+    DEBUG.RESET();
+    const {
+      code,
+      output
+    } = transform('LOG', 'development');
+    expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+    expect(code).toMatchFile(output);
+  });
+});
+"expr.isCallExpression()": true
+"ExpressionStatement": it('production', () => {
+  DEBUG.RESET();
+  const {
+    code,
+    output
+  } = transform('LOG', 'production');
+  expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+  expect(code).toMatchFile(output);
+});
+"expr.isCallExpression()": true
+"ExpressionStatement": DEBUG.RESET();
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const {
+  code,
+  output
+} = transform('LOG', 'production'); "mode": "development"
+"ExpressionStatement": expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": expect(code).toMatchFile(output);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": it('development', () => {
+  DEBUG.RESET();
+  const {
+    code,
+    output
+  } = transform('LOG', 'development');
+  expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+  expect(code).toMatchFile(output);
+});
+"expr.isCallExpression()": true
+"ExpressionStatement": DEBUG.RESET();
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const {
+  code,
+  output
+} = transform('LOG', 'development'); "mode": "development"
+"ExpressionStatement": expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": expect(code).toMatchFile(output);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": describe('ASSERT', () => {
+  it('production', () => {
+    DEBUG.RESET();
+    const {
+      code,
+      output
+    } = transform('ASSERT', 'production');
+    expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+    expect(code).toMatchFile(output);
+  });
+  it('development', () => {
+    DEBUG.RESET();
+    const {
+      code,
+      output
+    } = transform('ASSERT', 'development'); // expect(DEBUG.HISTORY()).toMatchFile(output + '.history')
+
+    expect(code).toMatchFile(output);
+  });
+});
+"expr.isCallExpression()": true
+"ExpressionStatement": it('production', () => {
+  DEBUG.RESET();
+  const {
+    code,
+    output
+  } = transform('ASSERT', 'production');
+  expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+  expect(code).toMatchFile(output);
+});
+"expr.isCallExpression()": true
+"ExpressionStatement": DEBUG.RESET();
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const {
+  code,
+  output
+} = transform('ASSERT', 'production'); "mode": "development"
+"ExpressionStatement": expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": expect(code).toMatchFile(output);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": it('development', () => {
+  DEBUG.RESET();
+  const {
+    code,
+    output
+  } = transform('ASSERT', 'development'); // expect(DEBUG.HISTORY()).toMatchFile(output + '.history')
+
+  expect(code).toMatchFile(output);
+});
+"expr.isCallExpression()": true
+"ExpressionStatement": DEBUG.RESET();
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const {
+  code,
+  output
+} = transform('ASSERT', 'development'); // expect(DEBUG.HISTORY()).toMatchFile(output + '.history') "mode": "development"
+"ExpressionStatement": // expect(DEBUG.HISTORY()).toMatchFile(output + '.history')
+expect(code).toMatchFile(output);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": describe('TRACE', () => {
+  it('production', () => {
+    DEBUG.RESET();
+    const {
+      code,
+      output
+    } = transform('TRACE', 'production');
+    expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+    expect(code).toMatchFile(output);
+  });
+  it('development', () => {
+    DEBUG.RESET();
+    const {
+      code,
+      output
+    } = transform('TRACE', 'development');
+    expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+    expect(code).toMatchFile(output);
+  });
+});
+"expr.isCallExpression()": true
+"ExpressionStatement": it('production', () => {
+  DEBUG.RESET();
+  const {
+    code,
+    output
+  } = transform('TRACE', 'production');
+  expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+  expect(code).toMatchFile(output);
+});
+"expr.isCallExpression()": true
+"ExpressionStatement": DEBUG.RESET();
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const {
+  code,
+  output
+} = transform('TRACE', 'production'); "mode": "development"
+"ExpressionStatement": expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": expect(code).toMatchFile(output);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": it('development', () => {
+  DEBUG.RESET();
+  const {
+    code,
+    output
+  } = transform('TRACE', 'development');
+  expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+  expect(code).toMatchFile(output);
+});
+"expr.isCallExpression()": true
+"ExpressionStatement": DEBUG.RESET();
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const {
+  code,
+  output
+} = transform('TRACE', 'development'); "mode": "development"
+"ExpressionStatement": expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": expect(code).toMatchFile(output);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": describe('sampleProject', () => {
+  describe('BHASKARA transformation', () => {
+    it('lib', () => {
+      DEBUG.RESET();
+      const {
+        code,
+        output
+      } = transformfile('bhaskara', path.join(__dirname, '../..', 'sampleProject/src/bhaskara.js'), path.join(__dirname, '../__fixtures__/bhaskara/bhaskara.output.js'));
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+      expect(code).toMatchFile(output);
+    });
+    it('test', () => {
+      DEBUG.RESET();
+      const {
+        code,
+        output
+      } = transformfile('bhaskara', path.join(__dirname, '../..', 'sampleProject/src/bhaskara.test.js'), path.join(__dirname, '../__fixtures__/bhaskara/bhaskara.test.output.js'));
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+      expect(code).toMatchFile(output);
+    });
+  });
+  describe('self transformation', () => {
+    it('lib', () => {
+      DEBUG.RESET();
+      const {
+        code,
+        output
+      } = transformfile('self', path.join(__dirname, '../index.ts'), path.join(__dirname, '../__fixtures__/self/development.index.output.js'), 'development');
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+      expect(code).toMatchFile(output);
+    });
+    it('test', () => {
+      DEBUG.RESET();
+      const {
+        code,
+        output
+      } = transformfile('self', path.join(__dirname, './index.test.ts'), path.join(__dirname, '../__fixtures__/self/development.index.test.output.js'), 'development');
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+      expect(code).toMatchFile(output);
+    });
+  });
+});
+"expr.isCallExpression()": true
+"ExpressionStatement": describe('BHASKARA transformation', () => {
+  it('lib', () => {
+    DEBUG.RESET();
+    const {
+      code,
+      output
+    } = transformfile('bhaskara', path.join(__dirname, '../..', 'sampleProject/src/bhaskara.js'), path.join(__dirname, '../__fixtures__/bhaskara/bhaskara.output.js'));
+    expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+    expect(code).toMatchFile(output);
+  });
+  it('test', () => {
+    DEBUG.RESET();
+    const {
+      code,
+      output
+    } = transformfile('bhaskara', path.join(__dirname, '../..', 'sampleProject/src/bhaskara.test.js'), path.join(__dirname, '../__fixtures__/bhaskara/bhaskara.test.output.js'));
+    expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+    expect(code).toMatchFile(output);
+  });
+});
+"expr.isCallExpression()": true
+"ExpressionStatement": it('lib', () => {
+  DEBUG.RESET();
+  const {
+    code,
+    output
+  } = transformfile('bhaskara', path.join(__dirname, '../..', 'sampleProject/src/bhaskara.js'), path.join(__dirname, '../__fixtures__/bhaskara/bhaskara.output.js'));
+  expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+  expect(code).toMatchFile(output);
+});
+"expr.isCallExpression()": true
+"ExpressionStatement": DEBUG.RESET();
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const {
+  code,
+  output
+} = transformfile('bhaskara', path.join(__dirname, '../..', 'sampleProject/src/bhaskara.js'), path.join(__dirname, '../__fixtures__/bhaskara/bhaskara.output.js')); "mode": "development"
+"ExpressionStatement": expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": expect(code).toMatchFile(output);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": it('test', () => {
+  DEBUG.RESET();
+  const {
+    code,
+    output
+  } = transformfile('bhaskara', path.join(__dirname, '../..', 'sampleProject/src/bhaskara.test.js'), path.join(__dirname, '../__fixtures__/bhaskara/bhaskara.test.output.js'));
+  expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+  expect(code).toMatchFile(output);
+});
+"expr.isCallExpression()": true
+"ExpressionStatement": DEBUG.RESET();
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const {
+  code,
+  output
+} = transformfile('bhaskara', path.join(__dirname, '../..', 'sampleProject/src/bhaskara.test.js'), path.join(__dirname, '../__fixtures__/bhaskara/bhaskara.test.output.js')); "mode": "development"
+"ExpressionStatement": expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": expect(code).toMatchFile(output);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": describe('self transformation', () => {
+  it('lib', () => {
+    DEBUG.RESET();
+    const {
+      code,
+      output
+    } = transformfile('self', path.join(__dirname, '../index.ts'), path.join(__dirname, '../__fixtures__/self/development.index.output.js'), 'development');
+    expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+    expect(code).toMatchFile(output);
+  });
+  it('test', () => {
+    DEBUG.RESET();
+    const {
+      code,
+      output
+    } = transformfile('self', path.join(__dirname, './index.test.ts'), path.join(__dirname, '../__fixtures__/self/development.index.test.output.js'), 'development');
+    expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+    expect(code).toMatchFile(output);
+  });
+});
+"expr.isCallExpression()": true
+"ExpressionStatement": it('lib', () => {
+  DEBUG.RESET();
+  const {
+    code,
+    output
+  } = transformfile('self', path.join(__dirname, '../index.ts'), path.join(__dirname, '../__fixtures__/self/development.index.output.js'), 'development');
+  expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+  expect(code).toMatchFile(output);
+});
+"expr.isCallExpression()": true
+"ExpressionStatement": DEBUG.RESET();
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const {
+  code,
+  output
+} = transformfile('self', path.join(__dirname, '../index.ts'), path.join(__dirname, '../__fixtures__/self/development.index.output.js'), 'development'); "mode": "development"
+"ExpressionStatement": expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": expect(code).toMatchFile(output);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": it('test', () => {
+  DEBUG.RESET();
+  const {
+    code,
+    output
+  } = transformfile('self', path.join(__dirname, './index.test.ts'), path.join(__dirname, '../__fixtures__/self/development.index.test.output.js'), 'development');
+  expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+  expect(code).toMatchFile(output);
+});
+"expr.isCallExpression()": true
+"ExpressionStatement": DEBUG.RESET();
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const {
+  code,
+  output
+} = transformfile('self', path.join(__dirname, './index.test.ts'), path.join(__dirname, '../__fixtures__/self/development.index.test.output.js'), 'development'); "mode": "development"
+"ExpressionStatement": expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": expect(code).toMatchFile(output);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const bkpend = process.env.NODE_ENV; "mode": "development"
+"ExpressionStatement": process.env.NODE_ENV = forceEnv;
+"expr.isCallExpression()": false
+"VariableDeclaration": const gen = babel.transformFileSync(input, configs[config]); "mode": "development"
+"ExpressionStatement": process.env.NODE_ENV = bkpend;
+"expr.isCallExpression()": false
+"VariableDeclaration": var cache = new WeakMap(); "mode": "development"
+"ExpressionStatement": _getRequireWildcardCache = function () {
+  return cache;
+};
+"expr.isCallExpression()": false
+"VariableDeclaration": var cache = _getRequireWildcardCache(); "mode": "development"
+"VariableDeclaration": var newObj = {}; "mode": "development"
+"VariableDeclaration": var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; "mode": "development"
+"VariableDeclaration": var key; "mode": "development"
+"VariableDeclaration": var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; "mode": "development"
+"ExpressionStatement": Object.defineProperty(newObj, key, desc);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": newObj[key] = obj[key];
+"expr.isCallExpression()": false
+"ExpressionStatement": newObj.default = obj;
+"expr.isCallExpression()": false
+"ExpressionStatement": cache.set(obj, newObj);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": var path = _interopRequireWildcard(require("path")); "mode": "development"
+"VariableDeclaration": var babel = _interopRequireWildcard(require("@babel/core")); "mode": "development"
+"VariableDeclaration": var _jestFileSnapshot = require("jest-file-snapshot"); "mode": "development"
+"VariableDeclaration": var _DEBUG = require("../DEBUG"); "mode": "development"

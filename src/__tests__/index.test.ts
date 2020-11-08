@@ -12,8 +12,7 @@ const configs = {
       [
         require.resolve('../index'),
         {
-          mode: 'production',
-          identifier: 'H5'
+          mode: 'production'
         }
       ]
     ],
@@ -23,9 +22,15 @@ const configs = {
       [
         require.resolve('../index'),
         {
-          mode: 'development',
-          identifier: 'H5'
+          mode: 'development'
         }
+      ]
+    ],
+  },
+  self: {
+    plugins: [
+      [
+        require.resolve('../index')
       ]
     ],
   },
@@ -39,7 +44,7 @@ const configs = {
         }
       ]
     ],
-  }
+  },
 };
 
 describe('babel-debug-tools', () => {
@@ -112,6 +117,32 @@ describe('babel-debug-tools', () => {
         expect(code).toMatchFile(output)
       })
     })
+    describe('self transformation', () => {
+      it('lib', () => {
+        DEBUG.RESET()
+        const { code, output } = transformfile(
+          'self',
+          path.join(__dirname, '../index.ts'),
+          path.join(__dirname, '../__fixtures__/self/development.index.output.js'),
+          'development'
+        )
+        expect(DEBUG.HISTORY()).toMatchFile(output + '.history')
+        expect(code).toMatchFile(output)
+      })
+      it('test', () => {
+        DEBUG.RESET()
+        const { code, output } = transformfile(
+          'self',
+          path.join(__dirname, './index.test.ts'),
+          path.join(__dirname, '../__fixtures__/self/development.index.test.output.js'),
+          'development'
+        )
+        expect(DEBUG.HISTORY()).toMatchFile(output + '.history')
+        expect(code).toMatchFile(output)
+      })
+
+    });
+
   });
 });
 
@@ -123,7 +154,13 @@ function transform(test: 'LOG' | 'ASSERT' | 'TRACE', config: keyof typeof config
   )
 }
 
-function transformfile(config: keyof typeof configs, input: string, output: string) {
-  const gen = babel.transformFileSync(input, configs[config]);
-  return { code: gen?.code || '', output }
+function transformfile(config: keyof typeof configs, input: string, output: string, forceEnv?: string) {
+  const bkpend = process.env.NODE_ENV
+  if (forceEnv) process.env.NODE_ENV = forceEnv
+  try {
+    const gen = babel.transformFileSync(input, configs[config]);
+    return { code: gen?.code || '', output }
+  } finally {
+    if (forceEnv) process.env.NODE_ENV = bkpend
+  }
 }

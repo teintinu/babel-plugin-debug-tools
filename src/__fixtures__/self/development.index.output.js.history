@@ -1,0 +1,647 @@
+"ImportDeclaration": import { DEBUG } from './DEBUG'; "mode": "development"
+"ImportDeclaration": import * as t from '@babel/types'; "mode": "development"
+"ImportDeclaration": import generate from "@babel/generator"; // const plugin: (p)=>Visitor "mode": "development"
+"VariableDeclaration": const visitor: PluginObj<PluginInfo> = {
+  name: 'babel-debug-tools',
+  visitor: {
+    VariableDeclaration(path, state) {
+      const mode = state.opts.mode || process.env.NODE_ENV || 'development';
+      DEBUG.TRACE({
+        VariableDeclaration: t.clone(path.node),
+        mode
+      });
+
+      if (mode === 'production') {
+        const decl = path.node.declarations;
+        const varid = decl && decl[0] && decl[0].id;
+
+        if (t.isIdentifier(varid) && varid.name === (state.opts.identifier || 'H5')) {
+          DEBUG.TRACE('Removing import');
+          path.remove();
+        }
+      }
+    },
+
+    ImportDeclaration(path, state) {
+      const mode = state.opts.mode || process.env.NODE_ENV || 'development';
+      DEBUG.TRACE({
+        ImportDeclaration: t.clone(path.node),
+        mode
+      });
+
+      if (mode === 'production') {
+        const specs = path.node.specifiers;
+        const s0: t.ImportSpecifier = (specs && specs[0] && t.isImportSpecifier(specs[0]) && specs[0] as any);
+
+        if (s0 && t.isIdentifier(s0.imported) && s0.imported.name === (state.opts.identifier || 'H5')) {
+          DEBUG.TRACE('Removing import');
+          path.remove();
+        }
+      }
+    },
+
+    ExpressionStatement(path, state) {
+      DEBUG.TRACE({
+        ExpressionStatement: t.clone(path.node)
+      });
+      const expr: NodePath<t.CallExpression> = (path.get('expression') as any);
+      DEBUG.TRACE(expr.isCallExpression());
+      if (!(expr && expr.isCallExpression())) return;
+      const callee: NodePath<t.MemberExpression> = (expr.get("callee") as any);
+      if (!callee.isMemberExpression()) return;
+      const object = callee.get("object");
+      const identifier = state.opts.identifier || 'H5';
+      const isH5 = object.isIdentifier({
+        name: identifier
+      });
+      const mode = state.opts.mode || process.env.NODE_ENV || 'development';
+      DEBUG.TRACE(identifier, mode, isH5);
+
+      if (isH5) {
+        DEBUG.assertString(identifier, mode);
+
+        if (mode === 'production') {
+          DEBUG.TRACE('Removing node');
+          path.remove();
+        } else {
+          const property = callee.get("property");
+          if (property.isIdentifier({
+            name: 'LOG'
+          })) transpileLOGorTRACE('LOG');else if (property.isIdentifier({
+            name: 'ASSERT'
+          })) transpileASSERT();else if (property.isIdentifier({
+            name: 'RESET'
+          })) {
+            DEBUG.TRACE('RESET', expr.node.arguments[0]);
+            transpileCloning();
+          } else if (property.isIdentifier({
+            name: 'TRACE'
+          })) transpileLOGorTRACE('TRACE');else if (property.isIdentifier({
+            name: 'INIT'
+          })) {
+            DEBUG.TRACE('INIT', expr.node.arguments[0]);
+            const arg0: t.FunctionExpression = (expr.node.arguments[0] as any);
+            path.get('expression').replaceWith(t.callExpression(t.clone(arg0), []));
+          } else {
+            const method: t.Identifier = (property.node as any);
+            let isCustom = false;
+
+            if (t.isIdentifier(method)) {
+              if (/^[a-z]\w+$/.test(method.name)) {
+                isCustom = true;
+                transpileCustom();
+              }
+            }
+
+            if (!isCustom) throw path.buildCodeFrameError("Invalid command");
+          }
+        }
+      }
+
+      function transpileLOGorTRACE(kind: 'LOG' | 'TRACE') {
+        DEBUG.TRACE({
+          LOG: expr.node.arguments[0]
+        });
+        const a0: t.Expression[] = kind === 'LOG' ? [calleeLoc()] : [];
+        const args = a0.concat(expr.node.arguments.reduce<t.Expression[]>((prev, curr) => {
+          const cclone: t.Expression = (t.clone(curr) as any);
+          if (t.isStringLiteral(cclone)) prev.push(cclone);else if (t.isObjectExpression(cclone)) {
+            cclone.properties.forEach(p => {
+              if (t.isObjectProperty(p)) {
+                const cname = t.isIdentifier(p.key) ? t.stringLiteral(p.key.name) : t.clone(p.key);
+                prev.push(t.arrayExpression([cname, t.clone((p.value as any))]));
+              }
+            });
+          } else {
+            const cname = t.stringLiteral(generate(cclone).code);
+            prev.push(t.arrayExpression([cname, cclone]));
+          }
+          return prev;
+        }, []));
+        const nexpr = t.callExpression(t.clone(callee.node), args);
+        DEBUG.TRACE({
+          'GENERATED': nexpr
+        });
+        path.get('expression').replaceWith(nexpr);
+      }
+
+      function transpileASSERT() {
+        interface Assertion {
+          caption: t.Expression;
+          expr: t.Expression;
+          fields: Fields;
+        }
+        interface Fields {
+          [caption: string]: t.Identifier;
+        }
+        const assertions: Assertion[] = [];
+        DEBUG.TRACE('ASSERT', expr.node);
+        if (expr.node.arguments.length === 0) throw path.buildCodeFrameError("Assert without arguments");
+        expr.node.arguments.forEach(curr => {
+          handlArg((curr as any));
+        }, []);
+        const nexpr = t.callExpression(t.clone(callee.node), [calleeLoc()].concat(assertions.map(a => t.arrayExpression([a.caption, a.expr, t.objectExpression(Object.keys(a.fields).map(fn => t.objectProperty(t.stringLiteral(fn), a.fields[fn])))]))));
+        DEBUG.TRACE({
+          'GENERATED': nexpr
+        });
+        path.get('expression').replaceWith(nexpr);
+
+        function handlArg(argExpr: t.Expression) {
+          DEBUG.TRACE(t.isRegExpLiteral(argExpr));
+
+          if (t.isRegExpLiteral(argExpr)) {
+            add(t.stringLiteral(argExpr.pattern), t.clone(argExpr), {});
+          } else if (t.isObjectExpression(argExpr)) {
+            argExpr.properties.forEach(p => {
+              if (t.isSpreadElement(p)) throw path.buildCodeFrameError("Spread is not supported");
+
+              if (t.isObjectMethod(p)) {
+                if (p.params.length) throw path.buildCodeFrameError("Remove arguments of methods");
+                add(p.key, t.callExpression(t.functionExpression(null, [], t.clone(p.body)), []), {});
+              } else {
+                const eaditionalFields: Fields = {};
+                const {
+                  caption,
+                  val
+                } = explainExpr((p.value as any), eaditionalFields, false);
+                add(t.stringLiteral(caption), val, eaditionalFields);
+              }
+            });
+          } else {
+            const eaditionalFields: Fields = {};
+            const {
+              caption,
+              val
+            } = explainExpr(argExpr, eaditionalFields, false);
+            add(t.stringLiteral(caption), val, eaditionalFields);
+          }
+        }
+
+        function add(caption: t.Expression, expr: t.Expression, fields: Fields) {
+          const a: Assertion = {
+            caption,
+            expr,
+            fields
+          };
+          assertions.push(a);
+          return a;
+        }
+
+        function explainExpr(bigExpr: t.Expression | t.PrivateName, fields: Fields, addf: boolean): {
+          caption: string;
+          val: t.Literal | t.Identifier;
+        } {
+          DEBUG.TRACE(bigExpr.type);
+
+          if (t.isStringLiteral(bigExpr)) {
+            return {
+              caption: bigExpr.value,
+              val: bigExpr
+            };
+          } else if (t.isNumericLiteral(bigExpr)) {
+            return {
+              caption: bigExpr.value.toString(),
+              val: bigExpr
+            };
+          } else if (t.isBooleanLiteral(bigExpr)) {
+            return {
+              caption: bigExpr.value ? 'true' : 'false',
+              val: bigExpr
+            };
+          } else if (t.isNullLiteral(bigExpr)) {
+            return {
+              caption: 'null',
+              val: bigExpr
+            };
+          } else if (t.isIdentifier(bigExpr)) {
+            if (addf) fields[bigExpr.name] = t.clone(bigExpr);
+            return {
+              caption: bigExpr.name,
+              val: bigExpr
+            };
+          } else if (t.isCallExpression(bigExpr)) {
+            bigExpr.arguments.forEach(a => {
+              explainExpr((a as any), fields, true);
+            });
+            const valId = path.scope.generateUidIdentifier('dbg');
+            path.scope.push({
+              id: valId
+            });
+            path.insertBefore(t.expressionStatement(t.assignmentExpression('=', valId, t.clone(bigExpr))));
+            return {
+              caption: generate(bigExpr).code,
+              val: valId
+            };
+          } else if (t.isBinaryExpression(bigExpr)) {
+            const left = explainExpr(bigExpr.left, fields, true);
+            const right = explainExpr(bigExpr.right, fields, true);
+            const caption = generate(bigExpr).code;
+            const expr = t.binaryExpression(bigExpr.operator, t.clone(left.val), t.clone(right.val));
+            const valId = path.scope.generateUidIdentifier('dbg');
+            path.scope.push({
+              id: valId
+            });
+            path.insertBefore(t.expressionStatement(t.assignmentExpression('=', valId, expr)));
+            fields[caption] = t.clone(valId);
+            return {
+              caption,
+              val: t.clone(valId)
+            };
+          } else if (t.isLogicalExpression(bigExpr)) {
+            const left = explainExpr(bigExpr.left, fields, true);
+            const right = explainExpr(bigExpr.right, fields, true);
+            const caption = generate(bigExpr).code;
+            const expr = t.logicalExpression(bigExpr.operator, t.clone(left.val), t.clone(right.val));
+            const valId = path.scope.generateUidIdentifier('dbg');
+            path.scope.push({
+              id: valId
+            });
+            path.insertBefore(t.expressionStatement(t.assignmentExpression('=', valId, expr)));
+            fields[caption] = t.clone(valId);
+            return {
+              caption,
+              val: t.clone(valId)
+            };
+          } else if (t.isConditionalExpression(bigExpr)) {
+            const test = explainExpr(bigExpr.test, fields, true);
+            const consequent = explainExpr(bigExpr.consequent, fields, true);
+            const alternate = explainExpr(bigExpr.alternate, fields, true);
+            const caption = generate(bigExpr).code;
+            const expr = t.conditionalExpression(t.clone(test.val), t.clone(consequent.val), t.clone(alternate.val));
+            const valId = path.scope.generateUidIdentifier('dbg');
+            path.scope.push({
+              id: valId
+            });
+            path.insertBefore(t.expressionStatement(t.assignmentExpression('=', valId, expr)));
+            fields[caption] = t.clone(valId);
+            return {
+              caption,
+              val: t.clone(valId)
+            };
+          } else if (t.isUnaryExpression(bigExpr)) {
+            const arg = explainExpr(bigExpr.argument, fields, true);
+            const caption = generate(bigExpr).code;
+            const expr = t.unaryExpression(bigExpr.operator, t.clone(arg.val));
+            const valId = path.scope.generateUidIdentifier('dbg');
+            path.scope.push({
+              id: valId
+            });
+            path.insertBefore(t.expressionStatement(t.assignmentExpression('=', valId, expr)));
+            fields[caption] = t.clone(valId);
+            return {
+              caption,
+              val: t.clone(valId)
+            }; // const cnameArg = t.stringLiteral(generate(cclone.argument).code)
+            // const isLiteralArg = t.isLiteral(cclone.argument)
+            // cclone.argument = argId
+            // if (!(isLiteralArg)) {
+            //   aditionalFields.push(t.objectProperty(cnameArg, argId))
+            // }
+            // return { caption: cname, expr: cclone }
+          }
+
+          throw path.buildCodeFrameError("unsupported expression: " + bigExpr.type);
+        }
+      }
+
+      function transpileCloning() {
+        path.get('expression').replaceWith(t.clone(expr.node));
+      }
+
+      function transpileCustom() {
+        DEBUG.TRACE('customMethod', expr.node);
+        const codes = t.arrayExpression(expr.node.arguments.map(arg => t.stringLiteral(generate(t.clone(arg)).code)));
+        const values = t.arrayExpression(expr.node.arguments.map(arg => (t.clone(arg) as t.Expression)));
+        const nexpr = t.callExpression(t.clone(callee.node), [calleeLoc(), codes, values]);
+        DEBUG.TRACE({
+          'GENERATED': nexpr
+        });
+        path.get('expression').replaceWith(nexpr);
+      }
+
+      function calleeLoc(): t.Expression {
+        const loc = callee.node.loc;
+        return t.objectExpression([t.objectProperty(t.identifier('filename'), state.filename ? t.stringLiteral(state.filename.replace(state.cwd, '')) : t.identifier('undefined')), t.objectProperty(t.identifier('line'), t.numericLiteral(loc?.start?.line || 0)), t.objectProperty(t.identifier('column'), t.numericLiteral(loc?.start?.column || 0))]);
+      }
+    }
+
+  }
+}; "mode": "development"
+"VariableDeclaration": const mode = state.opts.mode || process.env.NODE_ENV || 'development'; "mode": "development"
+"ExpressionStatement": DEBUG.TRACE(["VariableDeclaration", t.clone(path.node)], ["mode", mode]);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const decl = path.node.declarations; "mode": "development"
+"VariableDeclaration": const varid = decl && decl[0] && decl[0].id; "mode": "development"
+"ExpressionStatement": DEBUG.TRACE('Removing import');
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": path.remove();
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const mode = state.opts.mode || process.env.NODE_ENV || 'development'; "mode": "development"
+"ExpressionStatement": DEBUG.TRACE(["ImportDeclaration", t.clone(path.node)], ["mode", mode]);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const specs = path.node.specifiers; "mode": "development"
+"VariableDeclaration": const s0: t.ImportSpecifier = (specs && specs[0] && t.isImportSpecifier(specs[0]) && specs[0] as any); "mode": "development"
+"ExpressionStatement": DEBUG.TRACE('Removing import');
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": path.remove();
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": DEBUG.TRACE(["ExpressionStatement", t.clone(path.node)]);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const expr: NodePath<t.CallExpression> = (path.get('expression') as any); "mode": "development"
+"ExpressionStatement": DEBUG.TRACE(["expr.isCallExpression()", expr.isCallExpression()]);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const callee: NodePath<t.MemberExpression> = (expr.get("callee") as any); "mode": "development"
+"VariableDeclaration": const object = callee.get("object"); "mode": "development"
+"VariableDeclaration": const identifier = state.opts.identifier || 'H5'; "mode": "development"
+"VariableDeclaration": const isH5 = object.isIdentifier({
+  name: identifier
+}); "mode": "development"
+"VariableDeclaration": const mode = state.opts.mode || process.env.NODE_ENV || 'development'; "mode": "development"
+"ExpressionStatement": DEBUG.TRACE(["identifier", identifier], ["mode", mode], ["isH5", isH5]);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": DEBUG.assertString({
+  filename: "/src/index.ts",
+  line: 68,
+  column: 10
+}, ["identifier", "mode"], [identifier, mode]);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": DEBUG.TRACE('Removing node');
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": path.remove();
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const property = callee.get("property"); "mode": "development"
+"ExpressionStatement": transpileLOGorTRACE('LOG');
+"expr.isCallExpression()": true
+"ExpressionStatement": transpileASSERT();
+"expr.isCallExpression()": true
+"ExpressionStatement": DEBUG.TRACE('RESET', ["expr.node.arguments[0]", expr.node.arguments[0]]);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": transpileCloning();
+"expr.isCallExpression()": true
+"ExpressionStatement": transpileLOGorTRACE('TRACE');
+"expr.isCallExpression()": true
+"ExpressionStatement": DEBUG.TRACE('INIT', ["expr.node.arguments[0]", expr.node.arguments[0]]);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const arg0: t.FunctionExpression = (expr.node.arguments[0] as any); "mode": "development"
+"ExpressionStatement": path.get('expression').replaceWith(t.callExpression(t.clone(arg0), []));
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const method: t.Identifier = (property.node as any); "mode": "development"
+"VariableDeclaration": let isCustom = false; "mode": "development"
+"ExpressionStatement": isCustom = true;
+"expr.isCallExpression()": false
+"ExpressionStatement": transpileCustom();
+"expr.isCallExpression()": true
+"ExpressionStatement": DEBUG.TRACE(["LOG", expr.node.arguments[0]]);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const a0: t.Expression[] = kind === 'LOG' ? [calleeLoc()] : []; "mode": "development"
+"VariableDeclaration": const args = a0.concat(expr.node.arguments.reduce<t.Expression[]>((prev, curr) => {
+  const cclone: t.Expression = (t.clone(curr) as any);
+  if (t.isStringLiteral(cclone)) prev.push(cclone);else if (t.isObjectExpression(cclone)) {
+    cclone.properties.forEach(p => {
+      if (t.isObjectProperty(p)) {
+        const cname = t.isIdentifier(p.key) ? t.stringLiteral(p.key.name) : t.clone(p.key);
+        prev.push(t.arrayExpression([cname, t.clone((p.value as any))]));
+      }
+    });
+  } else {
+    const cname = t.stringLiteral(generate(cclone).code);
+    prev.push(t.arrayExpression([cname, cclone]));
+  }
+  return prev;
+}, [])); "mode": "development"
+"VariableDeclaration": const cclone: t.Expression = (t.clone(curr) as any); "mode": "development"
+"ExpressionStatement": prev.push(cclone);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": cclone.properties.forEach(p => {
+  if (t.isObjectProperty(p)) {
+    const cname = t.isIdentifier(p.key) ? t.stringLiteral(p.key.name) : t.clone(p.key);
+    prev.push(t.arrayExpression([cname, t.clone((p.value as any))]));
+  }
+});
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const cname = t.isIdentifier(p.key) ? t.stringLiteral(p.key.name) : t.clone(p.key); "mode": "development"
+"ExpressionStatement": prev.push(t.arrayExpression([cname, t.clone((p.value as any))]));
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const cname = t.stringLiteral(generate(cclone).code); "mode": "development"
+"ExpressionStatement": prev.push(t.arrayExpression([cname, cclone]));
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const nexpr = t.callExpression(t.clone(callee.node), args); "mode": "development"
+"ExpressionStatement": DEBUG.TRACE(['GENERATED', nexpr]);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": path.get('expression').replaceWith(nexpr);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const assertions: Assertion[] = []; "mode": "development"
+"ExpressionStatement": DEBUG.TRACE('ASSERT', ["expr.node", expr.node]);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": expr.node.arguments.forEach(curr => {
+  handlArg((curr as any));
+}, []);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": handlArg((curr as any));
+"expr.isCallExpression()": true
+"VariableDeclaration": const nexpr = t.callExpression(t.clone(callee.node), [calleeLoc()].concat(assertions.map(a => t.arrayExpression([a.caption, a.expr, t.objectExpression(Object.keys(a.fields).map(fn => t.objectProperty(t.stringLiteral(fn), a.fields[fn])))])))); "mode": "development"
+"ExpressionStatement": DEBUG.TRACE(['GENERATED', nexpr]);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": path.get('expression').replaceWith(nexpr);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": DEBUG.TRACE(["t.isRegExpLiteral(argExpr)", t.isRegExpLiteral(argExpr)]);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": add(t.stringLiteral(argExpr.pattern), t.clone(argExpr), {});
+"expr.isCallExpression()": true
+"ExpressionStatement": argExpr.properties.forEach(p => {
+  if (t.isSpreadElement(p)) throw path.buildCodeFrameError("Spread is not supported");
+
+  if (t.isObjectMethod(p)) {
+    if (p.params.length) throw path.buildCodeFrameError("Remove arguments of methods");
+    add(p.key, t.callExpression(t.functionExpression(null, [], t.clone(p.body)), []), {});
+  } else {
+    const eaditionalFields: Fields = {};
+    const {
+      caption,
+      val
+    } = explainExpr((p.value as any), eaditionalFields, false);
+    add(t.stringLiteral(caption), val, eaditionalFields);
+  }
+});
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": add(p.key, t.callExpression(t.functionExpression(null, [], t.clone(p.body)), []), {});
+"expr.isCallExpression()": true
+"VariableDeclaration": const eaditionalFields: Fields = {}; "mode": "development"
+"VariableDeclaration": const {
+  caption,
+  val
+} = explainExpr((p.value as any), eaditionalFields, false); "mode": "development"
+"ExpressionStatement": add(t.stringLiteral(caption), val, eaditionalFields);
+"expr.isCallExpression()": true
+"VariableDeclaration": const eaditionalFields: Fields = {}; "mode": "development"
+"VariableDeclaration": const {
+  caption,
+  val
+} = explainExpr(argExpr, eaditionalFields, false); "mode": "development"
+"ExpressionStatement": add(t.stringLiteral(caption), val, eaditionalFields);
+"expr.isCallExpression()": true
+"VariableDeclaration": const a: Assertion = {
+  caption,
+  expr,
+  fields
+}; "mode": "development"
+"ExpressionStatement": assertions.push(a);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": DEBUG.TRACE(["bigExpr.type", bigExpr.type]);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": fields[bigExpr.name] = t.clone(bigExpr);
+"expr.isCallExpression()": false
+"ExpressionStatement": bigExpr.arguments.forEach(a => {
+  explainExpr((a as any), fields, true);
+});
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": explainExpr((a as any), fields, true);
+"expr.isCallExpression()": true
+"VariableDeclaration": const valId = path.scope.generateUidIdentifier('dbg'); "mode": "development"
+"ExpressionStatement": path.scope.push({
+  id: valId
+});
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": path.insertBefore(t.expressionStatement(t.assignmentExpression('=', valId, t.clone(bigExpr))));
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const left = explainExpr(bigExpr.left, fields, true); "mode": "development"
+"VariableDeclaration": const right = explainExpr(bigExpr.right, fields, true); "mode": "development"
+"VariableDeclaration": const caption = generate(bigExpr).code; "mode": "development"
+"VariableDeclaration": const expr = t.binaryExpression(bigExpr.operator, t.clone(left.val), t.clone(right.val)); "mode": "development"
+"VariableDeclaration": const valId = path.scope.generateUidIdentifier('dbg'); "mode": "development"
+"ExpressionStatement": path.scope.push({
+  id: valId
+});
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": path.insertBefore(t.expressionStatement(t.assignmentExpression('=', valId, expr)));
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": fields[caption] = t.clone(valId);
+"expr.isCallExpression()": false
+"VariableDeclaration": const left = explainExpr(bigExpr.left, fields, true); "mode": "development"
+"VariableDeclaration": const right = explainExpr(bigExpr.right, fields, true); "mode": "development"
+"VariableDeclaration": const caption = generate(bigExpr).code; "mode": "development"
+"VariableDeclaration": const expr = t.logicalExpression(bigExpr.operator, t.clone(left.val), t.clone(right.val)); "mode": "development"
+"VariableDeclaration": const valId = path.scope.generateUidIdentifier('dbg'); "mode": "development"
+"ExpressionStatement": path.scope.push({
+  id: valId
+});
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": path.insertBefore(t.expressionStatement(t.assignmentExpression('=', valId, expr)));
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": fields[caption] = t.clone(valId);
+"expr.isCallExpression()": false
+"VariableDeclaration": const test = explainExpr(bigExpr.test, fields, true); "mode": "development"
+"VariableDeclaration": const consequent = explainExpr(bigExpr.consequent, fields, true); "mode": "development"
+"VariableDeclaration": const alternate = explainExpr(bigExpr.alternate, fields, true); "mode": "development"
+"VariableDeclaration": const caption = generate(bigExpr).code; "mode": "development"
+"VariableDeclaration": const expr = t.conditionalExpression(t.clone(test.val), t.clone(consequent.val), t.clone(alternate.val)); "mode": "development"
+"VariableDeclaration": const valId = path.scope.generateUidIdentifier('dbg'); "mode": "development"
+"ExpressionStatement": path.scope.push({
+  id: valId
+});
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": path.insertBefore(t.expressionStatement(t.assignmentExpression('=', valId, expr)));
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": fields[caption] = t.clone(valId);
+"expr.isCallExpression()": false
+"VariableDeclaration": const arg = explainExpr(bigExpr.argument, fields, true); "mode": "development"
+"VariableDeclaration": const caption = generate(bigExpr).code; "mode": "development"
+"VariableDeclaration": const expr = t.unaryExpression(bigExpr.operator, t.clone(arg.val)); "mode": "development"
+"VariableDeclaration": const valId = path.scope.generateUidIdentifier('dbg'); "mode": "development"
+"ExpressionStatement": path.scope.push({
+  id: valId
+});
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": path.insertBefore(t.expressionStatement(t.assignmentExpression('=', valId, expr)));
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": fields[caption] = t.clone(valId);
+"expr.isCallExpression()": false
+"ExpressionStatement": path.get('expression').replaceWith(t.clone(expr.node));
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": DEBUG.TRACE('customMethod', ["expr.node", expr.node]);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const codes = t.arrayExpression(expr.node.arguments.map(arg => t.stringLiteral(generate(t.clone(arg)).code))); "mode": "development"
+"VariableDeclaration": const values = t.arrayExpression(expr.node.arguments.map(arg => (t.clone(arg) as t.Expression))); "mode": "development"
+"VariableDeclaration": const nexpr = t.callExpression(t.clone(callee.node), [calleeLoc(), codes, values]); "mode": "development"
+"ExpressionStatement": DEBUG.TRACE(['GENERATED', nexpr]);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": path.get('expression').replaceWith(nexpr);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"VariableDeclaration": const loc = callee.node.loc; "mode": "development"
+"ExpressionStatement": exports.default = _default;
+"expr.isCallExpression()": false
+"VariableDeclaration": var cache = new WeakMap(); "mode": "development"
+"ExpressionStatement": _getRequireWildcardCache = function () {
+  return cache;
+};
+"expr.isCallExpression()": false
+"VariableDeclaration": var cache = _getRequireWildcardCache(); "mode": "development"
+"VariableDeclaration": var newObj = {}; "mode": "development"
+"VariableDeclaration": var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; "mode": "development"
+"VariableDeclaration": var key; "mode": "development"
+"VariableDeclaration": var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; "mode": "development"
+"ExpressionStatement": Object.defineProperty(newObj, key, desc);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": newObj[key] = obj[key];
+"expr.isCallExpression()": false
+"ExpressionStatement": newObj.default = obj;
+"expr.isCallExpression()": false
+"ExpressionStatement": cache.set(obj, newObj);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": exports.default = void 0;
+"expr.isCallExpression()": false
+"VariableDeclaration": var _DEBUG = require("./DEBUG"); "mode": "development"
+"VariableDeclaration": var t = _interopRequireWildcard(require("@babel/types")); "mode": "development"
+"VariableDeclaration": var _generator = _interopRequireDefault(require("@babel/generator")); "mode": "development"
