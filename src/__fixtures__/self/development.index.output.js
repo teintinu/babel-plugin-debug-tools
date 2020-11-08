@@ -158,7 +158,7 @@ var _default = () => {
           expr.node.arguments.forEach(curr => {
             handlArg(curr);
           }, []);
-          const nexpr = t.callExpression(t.clone(callee.node), [calleeLoc()].concat(assertions.map(a => t.arrayExpression([a.caption, a.expr, t.objectExpression(Object.keys(a.fields).map(fn => t.objectProperty(t.stringLiteral(fn), a.fields[fn])))]))));
+          const nexpr = t.callExpression(t.clone(callee.node), [calleeLoc()].concat(assertions.map(a => t.arrayExpression([a.caption, a.expr, t.objectExpression(Object.keys(a.fields).map(fn => t.objectProperty(t.stringLiteral(fn), t.clone(a.fields[fn]))))]))));
 
           _DEBUG.DEBUG.TRACE(['GENERATED', nexpr]);
 
@@ -198,7 +198,7 @@ var _default = () => {
           function add(caption, expr, fields) {
             const a = {
               caption,
-              expr,
+              expr: t.clone(expr),
               fields
             };
             assertions.push(a);

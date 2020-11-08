@@ -146,7 +146,7 @@ export default (() => {
                   a.expr,
                   t.objectExpression(
                     Object.keys(a.fields).map((fn) => t.objectProperty(
-                      t.stringLiteral(fn), a.fields[fn]
+                      t.stringLiteral(fn), t.clone(a.fields[fn])
                     )))
                 ]))))
           DEBUG.TRACE({ 'GENERATED': nexpr })
@@ -179,7 +179,7 @@ export default (() => {
           }
 
           function add(caption: t.Expression, expr: t.Expression, fields: Fields) {
-            const a: Assertion = { caption, expr, fields }
+            const a: Assertion = { caption, expr: t.clone(expr), fields }
             assertions.push(a)
             return a
           }

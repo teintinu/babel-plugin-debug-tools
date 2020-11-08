@@ -140,7 +140,7 @@
         expr.node.arguments.forEach(curr => {
           handlArg((curr as any));
         }, []);
-        const nexpr = t.callExpression(t.clone(callee.node), [calleeLoc()].concat(assertions.map(a => t.arrayExpression([a.caption, a.expr, t.objectExpression(Object.keys(a.fields).map(fn => t.objectProperty(t.stringLiteral(fn), a.fields[fn])))]))));
+        const nexpr = t.callExpression(t.clone(callee.node), [calleeLoc()].concat(assertions.map(a => t.arrayExpression([a.caption, a.expr, t.objectExpression(Object.keys(a.fields).map(fn => t.objectProperty(t.stringLiteral(fn), t.clone(a.fields[fn]))))]))));
         DEBUG.TRACE({
           'GENERATED': nexpr
         });
@@ -180,7 +180,7 @@
         function add(caption: t.Expression, expr: t.Expression, fields: Fields) {
           const a: Assertion = {
             caption,
-            expr,
+            expr: t.clone(expr),
             fields
           };
           assertions.push(a);
@@ -463,7 +463,7 @@
 "identifier": "H5" "mode": "development" "isH5": false
 "ExpressionStatement": handlArg((curr as any));
 "expr.isCallExpression()": true
-"VariableDeclaration": const nexpr = t.callExpression(t.clone(callee.node), [calleeLoc()].concat(assertions.map(a => t.arrayExpression([a.caption, a.expr, t.objectExpression(Object.keys(a.fields).map(fn => t.objectProperty(t.stringLiteral(fn), a.fields[fn])))])))); "mode": "development"
+"VariableDeclaration": const nexpr = t.callExpression(t.clone(callee.node), [calleeLoc()].concat(assertions.map(a => t.arrayExpression([a.caption, a.expr, t.objectExpression(Object.keys(a.fields).map(fn => t.objectProperty(t.stringLiteral(fn), t.clone(a.fields[fn]))))])))); "mode": "development"
 "ExpressionStatement": DEBUG.TRACE(['GENERATED', nexpr]);
 "expr.isCallExpression()": true
 "identifier": "H5" "mode": "development" "isH5": false
@@ -510,7 +510,7 @@
 "expr.isCallExpression()": true
 "VariableDeclaration": const a: Assertion = {
   caption,
-  expr,
+  expr: t.clone(expr),
   fields
 }; "mode": "development"
 "ExpressionStatement": assertions.push(a);

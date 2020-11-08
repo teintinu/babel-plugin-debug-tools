@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-debug-tools",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "Helpers for debug Javascript Applications",
   "repository": {
     "type": "git",
