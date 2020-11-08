@@ -96,7 +96,7 @@ function someFunction(a, b, c) {
     "b": b,
     "a - b": _dbg12,
     "!(a - b)": _dbg13
-  }], [isNotZero, function () {
+  }], ["isNotZero", function () {
     return a !== 0;
   }(), {}], ['isNotZero' + a, function () {
     return a !== 0;

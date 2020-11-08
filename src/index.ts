@@ -162,7 +162,8 @@ export default (() => {
                 if (t.isObjectMethod(p)) {
                   if (p.params.length)
                     throw path.buildCodeFrameError("Remove arguments of methods");
-                  add(p.key, t.callExpression(
+                  const caption = t.isIdentifier(p.key) ? t.stringLiteral(p.key.name) : p.key
+                  add(caption, t.callExpression(
                     t.functionExpression(null, [], t.clone(p.body)), []
                   ), {})
                 } else {
