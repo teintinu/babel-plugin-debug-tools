@@ -9,23 +9,23 @@ export const DEBUG: H5 = {
     console.log(formatArgs(arguments, 1));
   },
   ASSERT() {
-    // const loc: H5Loc = arguments[0]
-    // for (let i = 1; i < arguments.length; i++) {
-    //   const [caption, val, fields] = arguments[i]
-    //   if (Array.isArray(val)) {
-    //     const err = !val
-    //     if (err) throw new Error(
-    //       'ASSERT FAIL: ' + caption + ' at ' + formatLoc(loc) +
-    //       (fields ? JSON.stringify(fields) : '')
-    //     );
-    //     else if (DEBUG.logAssertions) console.log('ASSERT', caption, fields || '')
-    //   } else {
-    //     const err = !traceLog.some(l => val.test(l))
-    //     if (err)
-    //       throw new Error('NOT FOUND IN HISTORY: ' + val.toString() + ' at ' + formatLoc(loc))
-    //     else if (DEBUG.logAssertions) console.log('ASSERT', caption, fields || '')
-    //   }
-    // }
+    const loc: H5Loc = arguments[0]
+    for (let i = 1; i < arguments.length; i++) {
+      const [caption, val, fields] = arguments[i]
+      if (Array.isArray(val)) {
+        const err = !val
+        if (err) throw new Error(
+          'ASSERT FAIL: ' + caption + ' at ' + formatLoc(loc) +
+          (fields ? JSON.stringify(fields) : '')
+        );
+        else if (DEBUG.logAssertions) console.log('ASSERT', caption, fields || '')
+      } else {
+        const err = !traceLog.some(l => val.test(l))
+        if (err)
+          throw new Error('NOT FOUND IN HISTORY: ' + val.toString() + ' at ' + formatLoc(loc))
+        else if (DEBUG.logAssertions) console.log('ASSERT', caption, fields || '')
+      }
+    }
   },
   RESET() {
     traceLog = [];

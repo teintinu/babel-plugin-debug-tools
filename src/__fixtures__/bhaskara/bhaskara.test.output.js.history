@@ -19,14 +19,19 @@
 "expr.isCallExpression()": true
 "identifier": "BHASKARA" "mode": "development" "isH5": true
 "ASSERT" "expr.node": BHASKARA.ASSERT(typeof quadraticEquation === 'function')
-"t.isRegExpLiteral(curr)": false
-"t.isBinaryExpression(cclone)": true "t.isUnaryExpression(cclone)": false
+"t.isRegExpLiteral(argExpr)": false
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "UnaryExpression"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "StringLiteral"
 "GENERATED": BHASKARA.ASSERT({
   filename: "/sampleProject/src/bhaskara.test.js",
   line: 6,
   column: 2
-}, ["typeof quadraticEquation === 'function'", _left === _right, {
-  "typeof quadraticEquation": _left
+}, ["typeof quadraticEquation === 'function'", _dbg2, {
+  "quadraticEquation": quadraticEquation,
+  "typeof quadraticEquation": _dbg,
+  "typeof quadraticEquation === 'function'": _dbg2
 }])
 "VariableDeclaration": const {
   x1,
@@ -36,36 +41,41 @@
 "expr.isCallExpression()": true
 "identifier": "BHASKARA" "mode": "development" "isH5": true
 "ASSERT" "expr.node": BHASKARA.ASSERT(/delta: 100/, x1 === 1, x2 === -9)
-"t.isRegExpLiteral(curr)": true
-"t.isRegExpLiteral(curr)": false
-"t.isBinaryExpression(cclone)": true "t.isUnaryExpression(cclone)": false
-"t.isRegExpLiteral(curr)": false
-"t.isBinaryExpression(cclone)": true "t.isUnaryExpression(cclone)": false
+"t.isRegExpLiteral(argExpr)": true
+"t.isRegExpLiteral(argExpr)": false
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "NumericLiteral"
+"t.isRegExpLiteral(argExpr)": false
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "UnaryExpression"
+"bigExpr.type": "NumericLiteral"
 "GENERATED": BHASKARA.ASSERT({
   filename: "/sampleProject/src/bhaskara.test.js",
   line: 8,
   column: 2
-}, /delta: 100/, ["x1 === 1", _left2 === _right2, {
-  "x1": _left2
-}], ["x2 === -9", _left3 === _right3, {
-  "x2": _left3,
-  "-9": _right3
+}, ["delta: 100", /delta: 100/, {}], ["x1 === 1", _dbg3, {
+  "x1": x1,
+  "x1 === 1": _dbg3
+}], ["x2 === -9", _dbg5, {
+  "x2": x2,
+  "-9": _dbg4,
+  "x2 === -9": _dbg5
 }])
 "ExpressionStatement": expect(BHASKARA.HISTORY()).toEqual('a: 1 b: 8 c: -9 delta: 100\nx1: 1 x2: -9');
 "expr.isCallExpression()": true
 "identifier": "BHASKARA" "mode": "development" "isH5": false
-"VariableDeclaration": var _left, _right, _left2, _right2, _left3, _right3; "mode": "development"
-"ExpressionStatement": _left = typeof quadraticEquation;
+"VariableDeclaration": var _dbg, _dbg2, _dbg3, _dbg4, _dbg5; "mode": "development"
+"ExpressionStatement": _dbg = typeof quadraticEquation;
 "expr.isCallExpression()": false
-"ExpressionStatement": _right = 'function';
+"ExpressionStatement": _dbg2 = _dbg === 'function';
 "expr.isCallExpression()": false
-"ExpressionStatement": _left2 = x1;
+"ExpressionStatement": _dbg3 = x1 === 1;
 "expr.isCallExpression()": false
-"ExpressionStatement": _right2 = 1;
+"ExpressionStatement": _dbg4 = -9;
 "expr.isCallExpression()": false
-"ExpressionStatement": _left3 = x2;
-"expr.isCallExpression()": false
-"ExpressionStatement": _right3 = -9;
+"ExpressionStatement": _dbg5 = x2 === _dbg4;
 "expr.isCallExpression()": false
 "VariableDeclaration": var _bhaskara = require("./bhaskara"); "mode": "development"
 "VariableDeclaration": var _debug = require("./debug"); "mode": "development"

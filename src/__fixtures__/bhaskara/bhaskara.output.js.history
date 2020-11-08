@@ -3,14 +3,17 @@
 "expr.isCallExpression()": true
 "identifier": "BHASKARA" "mode": "development" "isH5": true
 "ASSERT" "expr.node": BHASKARA.ASSERT(a !== 0)
-"t.isRegExpLiteral(curr)": false
-"t.isBinaryExpression(cclone)": true "t.isUnaryExpression(cclone)": false
+"t.isRegExpLiteral(argExpr)": false
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "NumericLiteral"
 "GENERATED": BHASKARA.ASSERT({
   filename: "/sampleProject/src/bhaskara.js",
   line: 4,
   column: 2
-}, ["a !== 0", _left !== _right, {
-  "a": _left
+}, ["a !== 0", _dbg, {
+  "a": a,
+  "a !== 0": _dbg
 }])
 "VariableDeclaration": const delta = b * b - 4 * a * c; // b² – 4ac "mode": "development"
 "ExpressionStatement": // b² – 4ac
@@ -26,10 +29,8 @@ BHASKARA.TRACE(a, b, c, delta);
 "identifier": "BHASKARA" "mode": "development" "isH5": true
 "LOG": x1
 "GENERATED": BHASKARA.TRACE(["x1", x1], ["x2", x2])
-"VariableDeclaration": var _left, _right; "mode": "development"
-"ExpressionStatement": _left = a;
-"expr.isCallExpression()": false
-"ExpressionStatement": _right = 0;
+"VariableDeclaration": var _dbg; "mode": "development"
+"ExpressionStatement": _dbg = a !== 0;
 "expr.isCallExpression()": false
 "ExpressionStatement": Object.defineProperty(exports, "__esModule", {
   value: true

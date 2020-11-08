@@ -188,7 +188,7 @@ export default (() => {
             caption: string,
             val: t.Literal | t.Identifier,
           } {
-            DEBUG.TRACE(t.isLiteral(bigExpr), t.isIdentifier(bigExpr), t.isBinaryExpression(bigExpr), t.isUnaryExpression(bigExpr))
+            DEBUG.TRACE(bigExpr.type)
             if (t.isStringLiteral(bigExpr)) {
               return { caption: bigExpr.value, val: bigExpr }
             } else if (t.isNumericLiteral(bigExpr)) {

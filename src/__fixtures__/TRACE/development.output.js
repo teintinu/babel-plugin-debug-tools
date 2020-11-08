@@ -18,7 +18,7 @@ function main() {
     filename: "/src/__fixtures__/TRACE/code.js",
     line: 13,
     column: 2
-  }, /sum a=1 b=2/);
+  }, ["sum a=1 b=2", /sum a=1 b=2/, {}]);
 
   console.log(c);
   console.log(_DEBUGGER.H5.HISTORY());

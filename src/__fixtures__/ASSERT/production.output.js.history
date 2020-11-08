@@ -1,18 +1,84 @@
 "ImportDeclaration": import { H5 } from './DEBUGGER'; "mode": "production"
 "Removing import"
-"ExpressionStatement": H5.ASSERT(typeof a === 'number', a > 0);
+"ExpressionStatement": H5.ASSERT(a !== 0); // simple assertion
 "expr.isCallExpression()": true
 "identifier": "H5" "mode": "production" "isH5": true
 "Removing node"
-"ExpressionStatement": H5.ASSERT(typeof b === 'number', 0 < b);
+"ExpressionStatement": // simple assertion
+H5.ASSERT(typeof a === 'number', a !== 0); // multiple assertions on line
 "expr.isCallExpression()": true
 "identifier": "H5" "mode": "production" "isH5": true
 "Removing node"
-"ExpressionStatement": H5.ASSERT(!(a - b));
+"ExpressionStatement": // simple assertion
+// multiple assertions on line
+H5.ASSERT(!(a - b)); // complex expressions
 "expr.isCallExpression()": true
 "identifier": "H5" "mode": "production" "isH5": true
 "Removing node"
-"ExpressionStatement": H5.assertString(typeof a);
+"ExpressionStatement": // simple assertion
+// multiple assertions on line
+// complex expressions
+H5.ASSERT({
+  'cant be equals': !(a - b)
+}); // named assertion
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "production" "isH5": true
+"Removing node"
+"ExpressionStatement": // simple assertion
+// multiple assertions on line
+// complex expressions
+// named assertion
+H5.ASSERT({
+  '"a" cant be zero': a !== 0,
+  '"a" must be string': typeof a === 'string',
+  '"a" must be diferent of "b"': !(a - b)
+}); // multiple named assertions
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "production" "isH5": true
+"Removing node"
+"ExpressionStatement": // simple assertion
+// multiple assertions on line
+// complex expressions
+// named assertion
+// multiple named assertions
+H5.ASSERT({
+  '"a" must be diferent of "b"'() {
+    return !(a - b);
+  }
+
+}); // named assetion with code
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "production" "isH5": true
+"Removing node"
+"ExpressionStatement": // simple assertion
+// multiple assertions on line
+// complex expressions
+// named assertion
+// multiple named assertions
+// named assetion with code
+H5.ASSERT(isNotZero(a)); //
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "production" "isH5": true
+"Removing node"
+"ExpressionStatement": // simple assertion
+// multiple assertions on line
+// complex expressions
+// named assertion
+// multiple named assertions
+// named assetion with code
+// 
+H5.ASSERT(a !== 0 && b * b - 4 * a * c >= 0 ? (-b + Math.sqrt(b * b - 4 * a * c)) / (4 * a * c) : null);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "production" "isH5": true
+"Removing node"
+"ExpressionStatement": // simple assertion
+// multiple assertions on line
+// complex expressions
+// named assertion
+// multiple named assertions
+// named assetion with code
+// 
+H5.assertString(typeof a); // customMethod, see definition in DEBUGGER.js
 "expr.isCallExpression()": true
 "identifier": "H5" "mode": "production" "isH5": true
 "Removing node"

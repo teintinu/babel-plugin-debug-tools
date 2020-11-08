@@ -8,17 +8,17 @@ exports.quadraticEquation = quadraticEquation;
 var _debug = require("./debug");
 
 function quadraticEquation(a, b, c) {
-  var _left, _right;
+  var _dbg;
 
-  _left = a;
-  _right = 0;
+  _dbg = a !== 0;
 
   _debug.BHASKARA.ASSERT({
     filename: "/sampleProject/src/bhaskara.js",
     line: 4,
     column: 2
-  }, ["a !== 0", _left !== _right, {
-    "a": _left
+  }, ["a !== 0", _dbg, {
+    "a": a,
+    "a !== 0": _dbg
   }]);
 
   const delta = b * b - 4 * a * c; // b² – 4ac
