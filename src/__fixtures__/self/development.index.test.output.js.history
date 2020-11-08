@@ -64,8 +64,8 @@
       const {
         code,
         output
-      } = transform('ASSERT', 'development'); // expect(DEBUG.HISTORY()).toMatchFile(output + '.history')
-
+      } = transform('ASSERT', 'development');
+      expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
       expect(code).toMatchFile(output);
     });
   });
@@ -215,8 +215,8 @@
     const {
       code,
       output
-    } = transform('ASSERT', 'development'); // expect(DEBUG.HISTORY()).toMatchFile(output + '.history')
-
+    } = transform('ASSERT', 'development');
+    expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
     expect(code).toMatchFile(output);
   });
 });
@@ -249,8 +249,8 @@
   const {
     code,
     output
-  } = transform('ASSERT', 'development'); // expect(DEBUG.HISTORY()).toMatchFile(output + '.history')
-
+  } = transform('ASSERT', 'development');
+  expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
   expect(code).toMatchFile(output);
 });
 "expr.isCallExpression()": true
@@ -260,9 +260,11 @@
 "VariableDeclaration": const {
   code,
   output
-} = transform('ASSERT', 'development'); // expect(DEBUG.HISTORY()).toMatchFile(output + '.history') "mode": "development"
-"ExpressionStatement": // expect(DEBUG.HISTORY()).toMatchFile(output + '.history')
-expect(code).toMatchFile(output);
+} = transform('ASSERT', 'development'); "mode": "development"
+"ExpressionStatement": expect(DEBUG.HISTORY()).toMatchFile(output + '.history');
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": false
+"ExpressionStatement": expect(code).toMatchFile(output);
 "expr.isCallExpression()": true
 "identifier": "H5" "mode": "development" "isH5": false
 "ExpressionStatement": describe('TRACE', () => {

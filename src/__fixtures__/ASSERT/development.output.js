@@ -65,6 +65,15 @@ function someFunction(a, b, c) {
   }]); // named assertion
 
 
+  _DEBUGGER.H5.ASSERT({
+    filename: "/src/__fixtures__/ASSERT/code.js",
+    line: 8,
+    column: 2
+  }, ['"a" must be diferent of "b"', function () {
+    return !(a - b);
+  }(), {}]); // named assetion with code
+
+
   _dbg9 = a !== 0;
   _dbg10 = typeof a;
   _dbg11 = _dbg10 === 'string';
@@ -73,7 +82,7 @@ function someFunction(a, b, c) {
 
   _DEBUGGER.H5.ASSERT({
     filename: "/src/__fixtures__/ASSERT/code.js",
-    line: 8,
+    line: 13,
     column: 2
   }, ["a !== 0", _dbg9, {
     "a": a,
@@ -87,23 +96,18 @@ function someFunction(a, b, c) {
     "b": b,
     "a - b": _dbg12,
     "!(a - b)": _dbg13
-  }]); // multiple named assertions
-
-
-  _DEBUGGER.H5.ASSERT({
-    filename: "/src/__fixtures__/ASSERT/code.js",
-    line: 13,
-    column: 2
-  }, ['"a" must be diferent of "b"', function () {
-    return !(a - b);
-  }(), {}]); // named assetion with code
+  }], [isNotZero, function () {
+    return a !== 0;
+  }(), {}], ['isNotZero' + a, function () {
+    return a !== 0;
+  }(), {}]); // multiple named assertions
 
 
   _dbg14 = isNotZero(a);
 
   _DEBUGGER.H5.ASSERT({
     filename: "/src/__fixtures__/ASSERT/code.js",
-    line: 18,
+    line: 24,
     column: 2
   }, ["isNotZero(a)", _dbg14, {
     "a": a
@@ -131,7 +135,7 @@ function someFunction(a, b, c) {
 
   _DEBUGGER.H5.ASSERT({
     filename: "/src/__fixtures__/ASSERT/code.js",
-    line: 19,
+    line: 25,
     column: 2
   }, ["a !== 0 && b * b - 4 * a * c >= 0 ? (-b + Math.sqrt(b * b - 4 * a * c)) / (4 * a * c) : null", _dbg32, {
     "a": a,
@@ -152,7 +156,7 @@ function someFunction(a, b, c) {
 
   _DEBUGGER.H5.assertString({
     filename: "/src/__fixtures__/ASSERT/code.js",
-    line: 24,
+    line: 30,
     column: 2
   }, ["typeof a"], [typeof a]); // customMethod, see definition in DEBUGGER.js
 

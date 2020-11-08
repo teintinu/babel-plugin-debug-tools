@@ -76,8 +76,8 @@ describe('babel-debug-tools', () => {
       const {
         code,
         output
-      } = transform('ASSERT', 'development'); // expect(DEBUG.HISTORY()).toMatchFile(output + '.history')
-
+      } = transform('ASSERT', 'development');
+      expect(_DEBUG.DEBUG.HISTORY()).toMatchFile(output + '.history');
       expect(code).toMatchFile(output);
     });
   });

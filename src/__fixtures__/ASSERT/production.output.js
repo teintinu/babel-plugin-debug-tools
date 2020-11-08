@@ -5,8 +5,8 @@ function someFunction(a, b, c) {
   // multiple assertions on line
   // complex expressions
   // named assertion
-  // multiple named assertions
   // named assetion with code
+  // multiple named assertions
   // 
   // customMethod, see definition in DEBUGGER.js
   return a + b;

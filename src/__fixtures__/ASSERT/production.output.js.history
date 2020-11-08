@@ -29,19 +29,6 @@ H5.ASSERT({
 // complex expressions
 // named assertion
 H5.ASSERT({
-  '"a" cant be zero': a !== 0,
-  '"a" must be string': typeof a === 'string',
-  '"a" must be diferent of "b"': !(a - b)
-}); // multiple named assertions
-"expr.isCallExpression()": true
-"identifier": "H5" "mode": "production" "isH5": true
-"Removing node"
-"ExpressionStatement": // simple assertion
-// multiple assertions on line
-// complex expressions
-// named assertion
-// multiple named assertions
-H5.ASSERT({
   '"a" must be diferent of "b"'() {
     return !(a - b);
   }
@@ -54,8 +41,30 @@ H5.ASSERT({
 // multiple assertions on line
 // complex expressions
 // named assertion
-// multiple named assertions
 // named assetion with code
+H5.ASSERT({
+  '"a" cant be zero': a !== 0,
+  '"a" must be string': typeof a === 'string',
+  '"a" must be diferent of "b"': !(a - b),
+
+  isNotZero() {
+    return a !== 0;
+  },
+
+  ['isNotZero' + a]() {
+    return a !== 0;
+  }
+
+}); // multiple named assertions
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "production" "isH5": true
+"Removing node"
+"ExpressionStatement": // simple assertion
+// multiple assertions on line
+// complex expressions
+// named assertion
+// named assetion with code
+// multiple named assertions
 H5.ASSERT(isNotZero(a)); //
 "expr.isCallExpression()": true
 "identifier": "H5" "mode": "production" "isH5": true
@@ -64,8 +73,8 @@ H5.ASSERT(isNotZero(a)); //
 // multiple assertions on line
 // complex expressions
 // named assertion
-// multiple named assertions
 // named assetion with code
+// multiple named assertions
 // 
 H5.ASSERT(a !== 0 && b * b - 4 * a * c >= 0 ? (-b + Math.sqrt(b * b - 4 * a * c)) / (4 * a * c) : null);
 "expr.isCallExpression()": true
@@ -75,8 +84,8 @@ H5.ASSERT(a !== 0 && b * b - 4 * a * c >= 0 ? (-b + Math.sqrt(b * b - 4 * a * c)
 // multiple assertions on line
 // complex expressions
 // named assertion
-// multiple named assertions
 // named assetion with code
+// multiple named assertions
 // 
 H5.assertString(typeof a); // customMethod, see definition in DEBUGGER.js
 "expr.isCallExpression()": true

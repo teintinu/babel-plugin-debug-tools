@@ -1,77 +1,326 @@
 "ImportDeclaration": import { H5 } from './DEBUGGER'; "mode": "development"
-"ExpressionStatement": H5.ASSERT(typeof a === 'number', a > 0);
+"ExpressionStatement": H5.ASSERT(a !== 0); // simple assertion
 "expr.isCallExpression()": true
 "identifier": "H5" "mode": "development" "isH5": true
-"ASSERT" "expr.node": H5.ASSERT(typeof a === 'number', a > 0)
-"t.isRegExpLiteral(curr)": false
-"t.isBinaryExpression(cclone)": true "t.isUnaryExpression(cclone)": false
-"t.isRegExpLiteral(curr)": false
-"t.isBinaryExpression(cclone)": true "t.isUnaryExpression(cclone)": false
+"ASSERT" "expr.node": H5.ASSERT(a !== 0)
+"t.isRegExpLiteral(argExpr)": false
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "NumericLiteral"
 "GENERATED": H5.ASSERT({
   filename: "/src/__fixtures__/ASSERT/code.js",
   line: 4,
   column: 2
-}, ["typeof a === 'number'", _left === _right, {
-  "typeof a": _left
-}], ["a > 0", _left2 > _right2, {
-  "a": _left2
+}, ["a !== 0", _dbg, {
+  "a": a,
+  "a !== 0": _dbg
 }])
-"ExpressionStatement": H5.ASSERT(typeof b === 'number', 0 < b);
+"ExpressionStatement": // simple assertion
+H5.ASSERT(typeof a === 'number', a !== 0); // multiple assertions on line
 "expr.isCallExpression()": true
 "identifier": "H5" "mode": "development" "isH5": true
-"ASSERT" "expr.node": H5.ASSERT(typeof b === 'number', 0 < b)
-"t.isRegExpLiteral(curr)": false
-"t.isBinaryExpression(cclone)": true "t.isUnaryExpression(cclone)": false
-"t.isRegExpLiteral(curr)": false
-"t.isBinaryExpression(cclone)": true "t.isUnaryExpression(cclone)": false
+"ASSERT" "expr.node": H5.ASSERT(typeof a === 'number', a !== 0)
+"t.isRegExpLiteral(argExpr)": false
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "UnaryExpression"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "StringLiteral"
+"t.isRegExpLiteral(argExpr)": false
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "NumericLiteral"
 "GENERATED": H5.ASSERT({
   filename: "/src/__fixtures__/ASSERT/code.js",
   line: 5,
   column: 2
-}, ["typeof b === 'number'", _left3 === _right3, {
-  "typeof b": _left3
-}], ["0 < b", _left4 < _right4, {
-  "b": _right4
+}, ["typeof a === 'number'", _dbg3, {
+  "a": a,
+  "typeof a": _dbg2,
+  "typeof a === 'number'": _dbg3
+}], ["a !== 0", _dbg4, {
+  "a": a,
+  "a !== 0": _dbg4
 }])
-"ExpressionStatement": H5.ASSERT(!(a - b));
+"ExpressionStatement": // multiple assertions on line
+H5.ASSERT(!(a - b)); // complex expressions
 "expr.isCallExpression()": true
 "identifier": "H5" "mode": "development" "isH5": true
 "ASSERT" "expr.node": H5.ASSERT(!(a - b))
-"t.isRegExpLiteral(curr)": false
-"t.isBinaryExpression(cclone)": false "t.isUnaryExpression(cclone)": true
+"t.isRegExpLiteral(argExpr)": false
+"bigExpr.type": "UnaryExpression"
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "Identifier"
 "GENERATED": H5.ASSERT({
   filename: "/src/__fixtures__/ASSERT/code.js",
   line: 6,
   column: 2
-}, ["!(a - b)", !_arg, {
-  "a - b": _arg
+}, ["!(a - b)", _dbg6, {
+  "a": a,
+  "b": b,
+  "a - b": _dbg5,
+  "!(a - b)": _dbg6
 }])
-"ExpressionStatement": H5.assertString(typeof a);
+"ExpressionStatement": // complex expressions
+H5.ASSERT({
+  'cant be equals': !(a - b)
+}); // named assertion
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": true
+"ASSERT" "expr.node": H5.ASSERT({
+  'cant be equals': !(a - b)
+})
+"t.isRegExpLiteral(argExpr)": false
+"bigExpr.type": "UnaryExpression"
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "Identifier"
+"GENERATED": H5.ASSERT({
+  filename: "/src/__fixtures__/ASSERT/code.js",
+  line: 7,
+  column: 2
+}, ["!(a - b)", _dbg8, {
+  "a": a,
+  "b": b,
+  "a - b": _dbg7,
+  "!(a - b)": _dbg8
+}])
+"ExpressionStatement": // named assertion
+H5.ASSERT({
+  '"a" must be diferent of "b"'() {
+    return !(a - b);
+  }
+
+}); // named assetion with code
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": true
+"ASSERT" "expr.node": H5.ASSERT({
+  '"a" must be diferent of "b"'() {
+    return !(a - b);
+  }
+
+})
+"t.isRegExpLiteral(argExpr)": false
+"GENERATED": H5.ASSERT({
+  filename: "/src/__fixtures__/ASSERT/code.js",
+  line: 8,
+  column: 2
+}, ['"a" must be diferent of "b"', function () {
+  return !(a - b);
+}(), {}])
+"ExpressionStatement": // named assetion with code
+H5.ASSERT({
+  '"a" cant be zero': a !== 0,
+  '"a" must be string': typeof a === 'string',
+  '"a" must be diferent of "b"': !(a - b),
+
+  isNotZero() {
+    return a !== 0;
+  },
+
+  ['isNotZero' + a]() {
+    return a !== 0;
+  }
+
+}); // multiple named assertions
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": true
+"ASSERT" "expr.node": H5.ASSERT({
+  '"a" cant be zero': a !== 0,
+  '"a" must be string': typeof a === 'string',
+  '"a" must be diferent of "b"': !(a - b),
+
+  isNotZero() {
+    return a !== 0;
+  },
+
+  ['isNotZero' + a]() {
+    return a !== 0;
+  }
+
+})
+"t.isRegExpLiteral(argExpr)": false
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "NumericLiteral"
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "UnaryExpression"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "StringLiteral"
+"bigExpr.type": "UnaryExpression"
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "Identifier"
+"GENERATED": H5.ASSERT({
+  filename: "/src/__fixtures__/ASSERT/code.js",
+  line: 13,
+  column: 2
+}, ["a !== 0", _dbg9, {
+  "a": a,
+  "a !== 0": _dbg9
+}], ["typeof a === 'string'", _dbg11, {
+  "a": a,
+  "typeof a": _dbg10,
+  "typeof a === 'string'": _dbg11
+}], ["!(a - b)", _dbg13, {
+  "a": a,
+  "b": b,
+  "a - b": _dbg12,
+  "!(a - b)": _dbg13
+}], [isNotZero, function () {
+  return a !== 0;
+}(), {}], ['isNotZero' + a, function () {
+  return a !== 0;
+}(), {}])
+"ExpressionStatement": // multiple named assertions
+H5.ASSERT(isNotZero(a)); //
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": true
+"ASSERT" "expr.node": H5.ASSERT(isNotZero(a))
+"t.isRegExpLiteral(argExpr)": false
+"bigExpr.type": "CallExpression"
+"bigExpr.type": "Identifier"
+"GENERATED": H5.ASSERT({
+  filename: "/src/__fixtures__/ASSERT/code.js",
+  line: 24,
+  column: 2
+}, ["isNotZero(a)", _dbg14, {
+  "a": a
+}])
+"ExpressionStatement": // 
+H5.ASSERT(a !== 0 && b * b - 4 * a * c >= 0 ? (-b + Math.sqrt(b * b - 4 * a * c)) / (4 * a * c) : null);
+"expr.isCallExpression()": true
+"identifier": "H5" "mode": "development" "isH5": true
+"ASSERT" "expr.node": H5.ASSERT(a !== 0 && b * b - 4 * a * c >= 0 ? (-b + Math.sqrt(b * b - 4 * a * c)) / (4 * a * c) : null)
+"t.isRegExpLiteral(argExpr)": false
+"bigExpr.type": "ConditionalExpression"
+"bigExpr.type": "LogicalExpression"
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "NumericLiteral"
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "NumericLiteral"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "NumericLiteral"
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "UnaryExpression"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "CallExpression"
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "NumericLiteral"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "BinaryExpression"
+"bigExpr.type": "NumericLiteral"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "Identifier"
+"bigExpr.type": "NullLiteral"
+"GENERATED": H5.ASSERT({
+  filename: "/src/__fixtures__/ASSERT/code.js",
+  line: 25,
+  column: 2
+}, ["a !== 0 && b * b - 4 * a * c >= 0 ? (-b + Math.sqrt(b * b - 4 * a * c)) / (4 * a * c) : null", _dbg32, {
+  "a": a,
+  "a !== 0": _dbg15,
+  "b": b,
+  "b * b": _dbg23,
+  "4 * a": _dbg29,
+  "c": c,
+  "4 * a * c": _dbg30,
+  "b * b - 4 * a * c": _dbg26,
+  "b * b - 4 * a * c >= 0": _dbg20,
+  "a !== 0 && b * b - 4 * a * c >= 0": _dbg21,
+  "-b": _dbg22,
+  "-b + Math.sqrt(b * b - 4 * a * c)": _dbg28,
+  "(-b + Math.sqrt(b * b - 4 * a * c)) / (4 * a * c)": _dbg31,
+  "a !== 0 && b * b - 4 * a * c >= 0 ? (-b + Math.sqrt(b * b - 4 * a * c)) / (4 * a * c) : null": _dbg32
+}])
+"ExpressionStatement": H5.assertString(typeof a); // customMethod, see definition in DEBUGGER.js
 "expr.isCallExpression()": true
 "identifier": "H5" "mode": "development" "isH5": true
 "customMethod" "expr.node": H5.assertString(typeof a)
 "GENERATED": H5.assertString({
   filename: "/src/__fixtures__/ASSERT/code.js",
-  line: 7,
+  line: 30,
   column: 2
 }, ["typeof a"], [typeof a])
-"VariableDeclaration": var _left, _right, _left2, _right2, _left3, _right3, _left4, _right4; "mode": "development"
-"ExpressionStatement": _left = typeof a;
+"VariableDeclaration": var _dbg, _dbg2, _dbg3, _dbg4, _dbg5, _dbg6, _dbg7, _dbg8, _dbg9, _dbg10, _dbg11, _dbg12, _dbg13, _dbg14, _dbg15, _dbg16, _dbg17, _dbg18, _dbg19, _dbg20, _dbg21, _dbg22, _dbg23, _dbg24, _dbg25, _dbg26, _dbg27, _dbg28, _dbg29, _dbg30, _dbg31, _dbg32; "mode": "development"
+"ExpressionStatement": _dbg = a !== 0;
 "expr.isCallExpression()": false
-"ExpressionStatement": _right = 'number';
+"ExpressionStatement": _dbg2 = typeof a;
 "expr.isCallExpression()": false
-"ExpressionStatement": _left2 = a;
+"ExpressionStatement": _dbg3 = _dbg2 === 'number';
 "expr.isCallExpression()": false
-"ExpressionStatement": _right2 = 0;
+"ExpressionStatement": _dbg4 = a !== 0;
 "expr.isCallExpression()": false
-"ExpressionStatement": _left3 = typeof b;
+"ExpressionStatement": _dbg5 = a - b;
 "expr.isCallExpression()": false
-"ExpressionStatement": _right3 = 'number';
+"ExpressionStatement": _dbg6 = !_dbg5;
 "expr.isCallExpression()": false
-"ExpressionStatement": _left4 = 0;
+"ExpressionStatement": _dbg7 = a - b;
 "expr.isCallExpression()": false
-"ExpressionStatement": _right4 = b;
+"ExpressionStatement": _dbg8 = !_dbg7;
 "expr.isCallExpression()": false
-"ExpressionStatement": _arg = a - b;
+"ExpressionStatement": _dbg9 = a !== 0;
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg10 = typeof a;
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg11 = _dbg10 === 'string';
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg12 = a - b;
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg13 = !_dbg12;
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg14 = isNotZero(a);
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg15 = a !== 0;
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg16 = b * b;
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg17 = 4 * a;
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg18 = _dbg17 * c;
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg19 = _dbg16 - _dbg18;
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg20 = _dbg19 >= 0;
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg21 = _dbg15 && _dbg20;
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg22 = -b;
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg23 = b * b;
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg24 = 4 * a;
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg25 = _dbg24 * c;
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg26 = _dbg23 - _dbg25;
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg27 = Math.sqrt(b * b - 4 * a * c);
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg28 = _dbg22 + _dbg27;
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg29 = 4 * a;
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg30 = _dbg29 * c;
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg31 = _dbg28 / _dbg30;
+"expr.isCallExpression()": false
+"ExpressionStatement": _dbg32 = _dbg21 ? _dbg31 : null;
 "expr.isCallExpression()": false
 "VariableDeclaration": var _DEBUGGER = require("./DEBUGGER"); "mode": "development"
