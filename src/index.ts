@@ -190,15 +190,7 @@ export default (() => {
             val: t.Literal | t.Identifier,
           } {
             DEBUG.TRACE(bigExpr.type)
-            if (t.isStringLiteral(bigExpr)) {
-              return { caption: bigExpr.value, val: bigExpr }
-            } else if (t.isNumericLiteral(bigExpr)) {
-              return { caption: bigExpr.value.toString(), val: bigExpr }
-            } else if (t.isBooleanLiteral(bigExpr)) {
-              return { caption: bigExpr.value ? 'true' : 'false', val: bigExpr }
-            } else if (t.isNullLiteral(bigExpr)) {
-              return { caption: 'null', val: bigExpr }
-            } else if (t.isIdentifier(bigExpr)) {
+            if (t.isIdentifier(bigExpr)) {
               if (addf) fields[bigExpr.name] = t.clone(bigExpr)
               return { caption: bigExpr.name, val: bigExpr }
             } else if (t.isCallExpression(bigExpr)) {
@@ -286,8 +278,9 @@ export default (() => {
               //   aditionalFields.push(t.objectProperty(cnameArg, argId))
               // }
               // return { caption: cname, expr: cclone }
-            }
-            throw path.buildCodeFrameError("unsupported expression: " + bigExpr.type);
+            } else if (t.isAssignmentExpression(bigExpr) || t.isUpdateExpression(bigExpr))
+              path.buildCodeFrameError("Don't change state when assert");
+            return { caption: generate(bigExpr).code, val: bigExpr as any }
           }
         }
 

@@ -175,7 +175,8 @@ var _default = () => {
 
                 if (t.isObjectMethod(p)) {
                   if (p.params.length) throw path.buildCodeFrameError("Remove arguments of methods");
-                  add(p.key, t.callExpression(t.functionExpression(null, [], t.clone(p.body)), []), {});
+                  const caption = t.isIdentifier(p.key) ? t.stringLiteral(p.key.name) : p.key;
+                  add(caption, t.callExpression(t.functionExpression(null, [], t.clone(p.body)), []), {});
                 } else {
                   const eaditionalFields = {};
                   const {
@@ -208,27 +209,7 @@ var _default = () => {
           function explainExpr(bigExpr, fields, addf) {
             _DEBUG.DEBUG.TRACE(["bigExpr.type", bigExpr.type]);
 
-            if (t.isStringLiteral(bigExpr)) {
-              return {
-                caption: bigExpr.value,
-                val: bigExpr
-              };
-            } else if (t.isNumericLiteral(bigExpr)) {
-              return {
-                caption: bigExpr.value.toString(),
-                val: bigExpr
-              };
-            } else if (t.isBooleanLiteral(bigExpr)) {
-              return {
-                caption: bigExpr.value ? 'true' : 'false',
-                val: bigExpr
-              };
-            } else if (t.isNullLiteral(bigExpr)) {
-              return {
-                caption: 'null',
-                val: bigExpr
-              };
-            } else if (t.isIdentifier(bigExpr)) {
+            if (t.isIdentifier(bigExpr)) {
               if (addf) fields[bigExpr.name] = t.clone(bigExpr);
               return {
                 caption: bigExpr.name,
@@ -313,9 +294,12 @@ var _default = () => {
               //   aditionalFields.push(t.objectProperty(cnameArg, argId))
               // }
               // return { caption: cname, expr: cclone }
-            }
+            } else if (t.isAssignmentExpression(bigExpr) || t.isUpdateExpression(bigExpr)) path.buildCodeFrameError("Don't change state when assert");
 
-            throw path.buildCodeFrameError("unsupported expression: " + bigExpr.type);
+            return {
+              caption: (0, _generator.default)(bigExpr).code,
+              val: bigExpr
+            };
           }
         }
 
