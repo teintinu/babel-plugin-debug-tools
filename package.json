@@ -1,10 +1,10 @@
 {
   "name": "babel-plugin-debug-tools",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "description": "Helpers for debug Javascript Applications",
   "repository": {
     "type": "git",
-    "url": "https://github.com/thr0w/babel-plugin-debug-tools.git"
+    "url": "https://github.com/teintinu/babel-plugin-debug-tools.git"
   },
   "license": "GPL3",
   "publishConfig": {
@@ -37,7 +37,7 @@
   "devDependencies": {
     "@babel/cli": "^7.12.10",
     "@babel/plugin-transform-typescript": "^7.12.1",
-    "@types/jest": "^26.0.19",
+    "@types/jest": "^26.0.20",
     "typescript": "^4.1.3",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-typescript": "^7.12.7",
