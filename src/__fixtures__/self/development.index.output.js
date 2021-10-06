@@ -13,9 +13,9 @@ var _generator = _interopRequireDefault(require("@babel/generator"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 // const plugin: (p)=>Visitor
 var _default = () => {
@@ -320,8 +320,10 @@ var _default = () => {
         }
 
         function calleeLoc() {
+          var _loc$start, _loc$start2;
+
           const loc = callee.node.loc;
-          return t.objectExpression([t.objectProperty(t.identifier('filename'), state.filename ? t.stringLiteral(state.filename.replace(state.cwd, '')) : t.identifier('undefined')), t.objectProperty(t.identifier('line'), t.numericLiteral(loc?.start?.line || 0)), t.objectProperty(t.identifier('column'), t.numericLiteral(loc?.start?.column || 0))]);
+          return t.objectExpression([t.objectProperty(t.identifier('filename'), state.filename ? t.stringLiteral(state.filename.replace(state.cwd, '')) : t.identifier('undefined')), t.objectProperty(t.identifier('line'), t.numericLiteral((loc === null || loc === void 0 ? void 0 : (_loc$start = loc.start) === null || _loc$start === void 0 ? void 0 : _loc$start.line) || 0)), t.objectProperty(t.identifier('column'), t.numericLiteral((loc === null || loc === void 0 ? void 0 : (_loc$start2 = loc.start) === null || _loc$start2 === void 0 ? void 0 : _loc$start2.column) || 0))]);
         }
       }
 

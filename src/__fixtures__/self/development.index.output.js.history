@@ -602,14 +602,12 @@
 "expr.isCallExpression()": true
 "identifier": "H5" "mode": "development" "isH5": false
 "VariableDeclaration": const loc = callee.node.loc; "mode": "development"
+"VariableDeclaration": var _loc$start, _loc$start2; "mode": "development"
 "ExpressionStatement": exports.default = _default;
 "expr.isCallExpression()": false
-"VariableDeclaration": var cache = new WeakMap(); "mode": "development"
-"ExpressionStatement": _getRequireWildcardCache = function () {
-  return cache;
-};
-"expr.isCallExpression()": false
-"VariableDeclaration": var cache = _getRequireWildcardCache(); "mode": "development"
+"VariableDeclaration": var cacheBabelInterop = new WeakMap(); "mode": "development"
+"VariableDeclaration": var cacheNodeInterop = new WeakMap(); "mode": "development"
+"VariableDeclaration": var cache = _getRequireWildcardCache(nodeInterop); "mode": "development"
 "VariableDeclaration": var newObj = {}; "mode": "development"
 "VariableDeclaration": var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; "mode": "development"
 "VariableDeclaration": var key; "mode": "development"
